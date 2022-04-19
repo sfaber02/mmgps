@@ -7,19 +7,18 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 //Components
 import { Login } from './login.js';
 import { NavBar } from './navbar.js';
+import { Map } from './maptest.js';
 
 //Styles
 import './styles/navbar.css'
 
 //Globals
 const LOCAL_STORAGE_KEY = 'mmgps.credentials';
-const ENCRYPT_KEY = process.env.CRYPTO_SECRET;
+const ENCRYPT_KEY = process.env.REACT_APP_CRYPTO_SECRET;
 
 
 let storedUser =JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
 if (!storedUser) storedUser = '';
-
-    
 
 
 const App = () => {
@@ -34,9 +33,7 @@ const App = () => {
         setUser({name, email, token});
         setLoggedIn(true);
         if (save && storedUser.email !== email) {
-            console.log (password);
             const encryptedPW = AES.encrypt(password, ENCRYPT_KEY).toString();
-            console.log (encryptedPW);
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ email, password: encryptedPW }));
         }
     }
@@ -52,6 +49,7 @@ const App = () => {
 
     //ROUTES
     const Home = () => {
+        console.log ("RENDER");
         return (
             <div>
                 <NavBar user={user} logout={logout} />
@@ -61,7 +59,9 @@ const App = () => {
 
     return (
         <Routes>
-            <Route path='/' element={<Home />} />
+            <Route path='/*' element={<Home />}>
+               
+            </ Route> 
             <Route path='login/*' element={<Login handleLogin={handleLogin} storedUser={storedUser} />} />
         </Routes>
     ) 

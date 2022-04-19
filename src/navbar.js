@@ -6,7 +6,6 @@ const NavBar = (props) => {
 
     useEffect(() => setUser(props.user), [props.user]);
 
-    // const { name, email, token } = props.users;
 
     return (
         <div id='navBarContainer'>

@@ -11,3 +11,8 @@ This is react app used for testing my user authorization API and also as a templ
 - dotenv
 
 
+## TODO
+
+- FIGURE OUT REACT ROUTER ARGHHHHH
+
+
