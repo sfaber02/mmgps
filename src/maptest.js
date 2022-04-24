@@ -1,19 +1,16 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import './styles/map.css';
 
-import { GoogleMap, useLoadScript, Marker, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, useLoadScript, Marker, InfoWindow, Autocomplete } from '@react-google-maps/api';
+import { options, libraries, mapContainerStyle, center } from './mapConfig/config';
+import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
+import { Combobox, ComboboxInput, ComboboxPopover, ComboboxList, ComboboxOption } from '@reach/combobox';
+
 
 const GOOGLEMAPSKEY = process.env.REACT_APP_GOOGLE_MAPS_KEY;
-const libraries = ['places'];
-const mapContainerStyle = {
-    width: '100vw',
-    height: '100vh',
-}
-const center = {
-    lat: 40.777955,
-    lng: -73.968740,
-}
+
 
 const TheMap = () => {
     const navigate = useNavigate();
@@ -21,6 +18,16 @@ const TheMap = () => {
         googleMapsApiKey: GOOGLEMAPSKEY,
         libraries,
     })
+    const mapRef = useRef();
+    const onMapLoad = useCallback((map) => {
+        mapRef.current = map;
+    }, [])
+
+    const panTo = useCallback(({lat, lng}) => {
+        mapRef.current.panTo({lat, lng});
+        mapRef.current.setZoom(14);
+    }, [])
+
 
     if (loadError) return 'error loading maps'
     if (!isLoaded) return 'LOADING'
@@ -30,10 +37,17 @@ const TheMap = () => {
 
 
     const Path1 = () => {
-       
             return (
-                <div>
-                    <GoogleMap mapContainerStyle={mapContainerStyle} zoom={15} center={center} ></ GoogleMap>
+                <div id='mapContainer'>
+                    <Search panTo={panTo} />
+                    <Locate panTo={panTo} />
+                    <GoogleMap 
+                        mapContainerStyle={mapContainerStyle} 
+                        zoom={15} 
+                        center={center} 
+                        options={options}
+                        onLoad={onMapLoad}
+                    />
                 </div>
             )
   
@@ -50,6 +64,57 @@ const TheMap = () => {
         </Routes>
     )
 
+}
+
+const Locate = ({ panTo }) => {
+    return (
+        <button onClick={() => {
+            console.log('hi')
+            navigator.geolocation.getCurrentPosition((position) => {
+                panTo({
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                })
+            }, (err) => console.log(err));
+        }}>
+            Locate
+        </button>
+    )
+}
+
+const Search = ({ panTo }) => {
+    const {ready, value, suggestions: { status, data }, setValue, clearSuggestions} = usePlacesAutocomplete({
+        requestOptions: {
+            location: {lat: () => 40.777955, lng: () => -73.968740},
+            radius: 200 * 1000,
+        }
+    });
+
+    return (
+        <Combobox 
+            onSelect={async (address) => {
+                try {
+                    const results =  await getGeocode({address});
+                    const { lat, lng } = await getLatLng(results[0]);
+                    panTo({ lat, lng });
+                } catch(err) {
+                    alert (err);
+                }
+            }}>
+            <ComboboxInput 
+                value={value} onChange={(e) => {
+                    setValue(e.target.value)
+                }}
+                disabled={!ready}
+                placeholder='Enter an address' 
+            />
+            <ComboboxPopover>
+                <ComboboxList>
+                    {status === 'OK' && data.map(({id, description}) => <ComboboxOption key={uuidv4()} value={description} />)}
+                </ComboboxList>
+            </ComboboxPopover>
+        </Combobox>
+    )
 }
 
 
