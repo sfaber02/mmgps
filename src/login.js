@@ -23,7 +23,6 @@ const Login = (props) => {
 
     const handleLoginAttempt = (e) => {
         e.preventDefault();
-        console.log (e);
         const data = JSON.stringify({
           email: e.target.elements.email.value,
           password: e.target.elements.password.value,

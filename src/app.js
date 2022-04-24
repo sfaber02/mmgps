@@ -7,7 +7,7 @@ import { Route, Routes, useNavigate, Outlet, NavigationType } from 'react-router
 //Components
 import { Login } from './login.js';
 import { NavBar } from './navbar.js';
-import { Map } from "./maptest.js";
+import { TheMap } from "./maptest.js";
 import { Other } from './other.js';
 
 //Styles
@@ -53,11 +53,11 @@ const App = () => {
     //ROUTES
     const Home = () => {
         return (
-            <Map />
+            <TheMap />
         )
     }
 
-    return (
+    return ( 
         <>
             {loggedIn && <NavBar user={user} logout={logout} other={goOther} />}
             <Routes>
