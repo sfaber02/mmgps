@@ -1,13 +1,14 @@
 //Dependencies
 import { AES, enc } from 'crypto-js';
 import React, { useEffect, useState } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useNavigate, Outlet, NavigationType } from 'react-router-dom';
 
 
 //Components
 import { Login } from './login.js';
 import { NavBar } from './navbar.js';
-import { Map } from './maptest.js';
+import { Map } from "./maptest.js";
+import { Other } from './other.js';
 
 //Styles
 import './styles/navbar.css'
@@ -46,24 +47,25 @@ const App = () => {
         navigate('login');
     }
 
+    //Route changers from navbar
+    const goOther = () => navigate('/other');
 
     //ROUTES
     const Home = () => {
-        console.log ("RENDER");
         return (
-            <div>
-                <NavBar user={user} logout={logout} />
-            </div>
+            <Map />
         )
     }
 
     return (
-        <Routes>
-            <Route path='/*' element={<Home />}>
-               
-            </ Route> 
-            <Route path='login/*' element={<Login handleLogin={handleLogin} storedUser={storedUser} />} />
-        </Routes>
+        <>
+            {loggedIn && <NavBar user={user} logout={logout} other={goOther} />}
+            <Routes>
+                <Route path='/*' element={ <Home /> } />
+                <Route path='/other' element= { <Other /> } />
+                <Route path='login/*' element={<Login handleLogin={handleLogin} storedUser={storedUser} />} />
+            </Routes>
+        </>
     ) 
 }
 

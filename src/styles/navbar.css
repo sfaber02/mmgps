@@ -1,6 +1,9 @@
 
 #navBarContainer {
+    display: flex;
+    justify-content: space-around;
     border: 1px solid black;
     background: blue;
     color: yellow;
 }
+

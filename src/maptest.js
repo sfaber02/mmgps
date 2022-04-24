@@ -1,12 +1,14 @@
 import React from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 
+
+
 const Map = () => {
 
     const navigate = useNavigate();
 
     const changePath = () => navigate('two');
-    const changePath2 = () => navigate('');
+    const changePath2 = () => navigate('/');
 
     const Path1 = () => {
         return <button onClick={changePath}>PATH 1</button>
