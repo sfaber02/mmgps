@@ -27,7 +27,7 @@ const App = () => {
     const [user, setUser] = useState(() => {});
     const navigate = useNavigate();
 
-    useEffect(() => !loggedIn ? navigate('login') : navigate('/'), [loggedIn]);
+    // useEffect(() => !loggedIn ? navigate('login') : navigate('/'), [loggedIn]);
     
 
     const handleLogin = (name, email, token, save, password) => {
