@@ -8,7 +8,7 @@ export default [
                 "visibility": "off"
             }
         ]
-    },
+    }, 
     {
         "featureType": "administrative",
         "elementType": "labels",
@@ -35,7 +35,25 @@ export default [
         "elementType": "labels",
         "stylers": [
             {
-                "visibility": "off"
+                "visibility": "on"
+            }
+        ]
+    },
+    {
+        "featureType": "administrative.province",
+        "elementType": "labels",
+        "stylers": [
+            {
+                "visibility": "on"
+            }
+        ]
+    },
+    {
+        "featureType": "administrative.city",
+        "elementType": "labels",
+        "stylers": [
+            {
+                "visibility": "on"
             }
         ]
     },

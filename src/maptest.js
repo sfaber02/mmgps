@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import './styles/map.css';
+import '@reach/combobox/styles.css';
 
 import { GoogleMap, useLoadScript, Marker, InfoWindow, Autocomplete } from '@react-google-maps/api';
 import { options, libraries, mapContainerStyle, center } from './mapConfig/config';
@@ -69,7 +70,6 @@ const TheMap = () => {
 const Locate = ({ panTo }) => {
     return (
         <button onClick={() => {
-            console.log('hi')
             navigator.geolocation.getCurrentPosition((position) => {
                 panTo({
                     lat: position.coords.latitude,
