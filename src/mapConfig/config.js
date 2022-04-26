@@ -27,8 +27,8 @@ const options = {
 //POLYGON OPTIONS
 const polyOptions = {
     fillColor: "lightblue",
-    fillOpacity: 1,
-    strokeColor: "red",
+    fillOpacity: .5,
+    strokeColor: "white",
     strokeOpacity: 1,
     strokeWeight: 2,
     clickable: false,
