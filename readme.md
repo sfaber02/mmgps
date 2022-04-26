@@ -10,12 +10,16 @@
 - Axios
 - Crypto-js (for encrypting local storage PW for auto login option)
 - dotenv
+- use-places-autocomplete
+- uuidv4
+- @reach/combobox
+- @react-google-maps
+
 
 
 ## TODO
 
-- refactor map/ combobox code
-- map area selection and rendering of a static map
+- rendering of a static map based on area selected
 - saving map selections and progress to DB
 - 
 

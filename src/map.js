@@ -21,7 +21,7 @@ const TheMap = () => {
         googleMapsApiKey: GOOGLEMAPSKEY,
         libraries,
     })
-    
+
     /**
      * Sets the mapRef to the map when a new map is loaded
      * for saving current instance of the map

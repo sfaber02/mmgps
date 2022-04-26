@@ -121,6 +121,7 @@ const Login = (props) => {
         if (!storedUser) {
             return (
                 <div id='login'>
+                    <p>*** USE: email: guest | pw: guest if you don't want to make an account</p>
                     <form onSubmit={handleLoginAttempt}>
                         <label>Email: </label>
                         <input type='text' name='email'></input>
