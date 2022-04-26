@@ -1,6 +1,7 @@
-# Front end for user authorization
+# MMGPS
 
-This is react app used for testing my user authorization API and also as a template for future projects that will require user authorization
+
+
 
 ## Dependencies
 
@@ -13,6 +14,9 @@ This is react app used for testing my user authorization API and also as a templ
 
 ## TODO
 
-- FIGURE OUT REACT ROUTER ARGHHHHH
+- refactor map/ combobox code
+- map area selection and rendering of a static map
+- saving map selections and progress to DB
+- 
 
 

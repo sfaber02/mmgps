@@ -49,15 +49,6 @@ export default [
         ]
     },
     {
-        "featureType": "administrative.city",
-        "elementType": "labels",
-        "stylers": [
-            {
-                "visibility": "on"
-            }
-        ]
-    },
-    {
         "featureType": "landscape",
         "elementType": "all",
         "stylers": [

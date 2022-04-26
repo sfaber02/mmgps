@@ -1,7 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Other = () => {
-    return <h1>IT'S THE OTHER ONE</h1>
+    const navigate = useNavigate();
+
+    return (
+        <>
+            <h1>YAY THIS ROUTE WORKS</h1>
+            <button onClick={() => navigate('/')}>Go back</button>
+        </>
+    )
 }
 
 export { Other };
