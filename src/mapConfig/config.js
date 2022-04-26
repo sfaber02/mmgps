@@ -1,5 +1,8 @@
 import mapStyle from './mapStyles.js'
 
+
+//MAP OPTIONS
+
 const libraries = ['places'];
 
 const mapContainerStyle = {
@@ -18,7 +21,22 @@ const center = {
 const options = {
     styles: mapStyle,
     disableDefaultUI: true,
+    zoomControl: true,
+}
+
+//POLYGON OPTIONS
+const polyOptions = {
+    fillColor: "lightblue",
+    fillOpacity: 1,
+    strokeColor: "red",
+    strokeOpacity: 1,
+    strokeWeight: 2,
+    clickable: false,
+    draggable: false,
+    editable: true,
+    geodesic: false,
+    zIndex: 1
 }
 
 
-export {libraries, mapContainerStyle, center, options}
+export {libraries, mapContainerStyle, center, options, polyOptions}
