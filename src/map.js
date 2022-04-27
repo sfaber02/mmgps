@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import './styles/map.css';
 import '@reach/combobox/styles.css';
 
-import { GoogleMap, useLoadScript, Marker, InfoWindow, Autocomplete, Polygon } from '@react-google-maps/api';
-import { options, libraries, mapContainerStyle, center, polyOptions } from './mapConfig/config';
+import { GoogleMap, useLoadScript, Marker, Polygon, DrawingManager } from '@react-google-maps/api';
+import { options, libraries, mapContainerStyle, center, polyOptions, drawOptions } from './mapConfig/config';
 import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
 import { Combobox, ComboboxInput, ComboboxPopover, ComboboxList, ComboboxOption } from '@reach/combobox';
 
@@ -14,7 +14,8 @@ const GOOGLEMAPSKEY = process.env.REACT_APP_GOOGLE_MAPS_KEY;
 
 const TheMap = () => {
     const mapRef = useRef();
-    const [markers, setMarkers] = useState(() =>[]);
+    // const [markers, setMarkers] = useState(() =>[]);
+    const [polygons, setPolygons] = useState(() => []);
     
     /** loads all the google maps scripts */
     const {isLoaded, loadError} = useLoadScript({
@@ -38,15 +39,22 @@ const TheMap = () => {
         mapRef.current.setZoom(18);
     }, [])
 
-    const handleMapClick = (e) => {
-        console.log(markers);
-        setMarkers(prev => [...prev, {
-            lat: e.latLng.lat(),
-            lng: e.latLng.lng(),
-        }])
+    // const handleMapClick = (e) => {
+    //     console.log(markers);
+    //     setMarkers(prev => [...prev, {
+    //         lat: e.latLng.lat(),
+    //         lng: e.latLng.lng(),
+    //     }])
+    // }
+
+    const getPolygonPath = (polygon) => {
+        const coords = polygon.getPath();
+        console.log(typeof coords);
+        console.log (coords);
+        console.log (coords.Gd.map(coord => `${coord.lat()}, ${coord.lng()}`));
     }
 
-    const resetMap = () => setMarkers([]);
+    const resetMap = () => {};
     
     if (loadError) return 'error loading maps';
     if (!isLoaded) return 'LOADING';
@@ -63,15 +71,21 @@ const TheMap = () => {
                 center={center} 
                 options={options}
                 onLoad={onMapLoad}
-                onClick={handleMapClick}
+                // onClick={handleMapClick}
             >
-                {markers.map(marker => <Marker 
+                {/* {markers.map(marker => <Marker 
                     key={uuidv4()}
                     position={{lat: marker.lat, lng: marker.lng}}
                 />)}
                 <Polygon 
                     paths={markers}
                     options={polyOptions} 
+                /> */}
+                <DrawingManager 
+                    onPolygonComplete={getPolygonPath}
+                    drawingMode='polygon'
+                    options={drawOptions}
+                    
                 />   
             </ GoogleMap>
         </div>
