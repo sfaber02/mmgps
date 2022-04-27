@@ -1,10 +1,11 @@
+import { GoogleMap } from '@react-google-maps/api';
 import mapStyle from './mapStyles.js'
+
+//Load Script Props
+const libraries = ['places', 'drawing'];
 
 
 //MAP OPTIONS
-
-const libraries = ['places'];
-
 const mapContainerStyle = {
     width: '90vw',
     height: '85vh',
@@ -38,5 +39,17 @@ const polyOptions = {
     zIndex: 1
 }
 
+//DRAWING OPTIONS
+const drawOptions = {
+    drawingControlOptions: {
+        drawingModes: ["polygon"],
+        position: 'HELL NAH',
+    },
+    polygonOptions:{
+        strokeColor: "red",
+        fillColor: "blue",
+    },
+}
 
-export {libraries, mapContainerStyle, center, options, polyOptions}
+
+export {libraries, mapContainerStyle, center, options, polyOptions, drawOptions}

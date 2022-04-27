@@ -7,7 +7,7 @@ import { Route, Routes, useNavigate, Outlet, NavigationType } from 'react-router
 //Components
 import { Login } from './login.js';
 import { NavBar } from './navbar.js';
-import { TheMap } from "./map.js";
+import { RegionSelector } from "./regionSelector.js";
 import { Other } from './other.js';
 
 //Styles
@@ -51,7 +51,7 @@ const App = () => {
     const goOther = () => navigate('/other');
 
     //ROUTES
-    const Home = () => <TheMap />;
+    const Home = () => <RegionSelector />;
 
     return ( 
         <>
