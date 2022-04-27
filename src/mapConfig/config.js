@@ -25,31 +25,25 @@ const options = {
     zoomControl: true,
 }
 
-//POLYGON OPTIONS
-const polyOptions = {
-    fillColor: "lightblue",
-    fillOpacity: .5,
-    strokeColor: "white",
-    strokeOpacity: 1,
-    strokeWeight: 2,
-    clickable: false,
-    draggable: false,
-    editable: true,
-    geodesic: false,
-    zIndex: 1
-}
-
 //DRAWING OPTIONS
 const drawOptions = {
-    drawingControlOptions: {
-        drawingModes: ["polygon"],
-        position: 'HELL NAH',
-    },
-    polygonOptions:{
-        strokeColor: "red",
-        fillColor: "blue",
-    },
-}
+   drawingControlOptions: {
+      drawingModes: ["polygon"],
+      position: "HELL NAH",
+   },
+   polygonOptions: {
+      fillColor: "lightblue",
+      fillOpacity: 0.5,
+      strokeColor: "blue",
+      strokeOpacity: 1,
+      strokeWeight: 2,
+      clickable: false,
+      draggable: false,
+      editable: false,
+      geodesic: false,
+      zIndex: 1,
+   },
+};
 
 
-export {libraries, mapContainerStyle, center, options, polyOptions, drawOptions}
+export {libraries, mapContainerStyle, center, options, drawOptions};

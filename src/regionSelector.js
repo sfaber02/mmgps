@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { GoogleMap, useLoadScript, Marker, Polygon, DrawingManager } from '@react-google-maps/api';
-import { options, libraries, mapContainerStyle, center, polyOptions, drawOptions } from './mapConfig/config';
+import { GoogleMap, useLoadScript, DrawingManager } from '@react-google-maps/api';
+import { options, libraries, mapContainerStyle, center, drawOptions } from './mapConfig/config';
 import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
 import { Combobox, ComboboxInput, ComboboxPopover, ComboboxList, ComboboxOption } from '@reach/combobox';
 import './styles/map.css';
@@ -11,7 +11,7 @@ import '@reach/combobox/styles.css';
 const GOOGLEMAPSKEY = process.env.REACT_APP_GOOGLE_MAPS_KEY;
 
 
-const RegionSelector = () => {
+const RegionSelector = (props) => {
     const mapRef = useRef();
     const [polygons, setPolygons] = useState(() => []);
     
@@ -38,17 +38,11 @@ const RegionSelector = () => {
     }, [])
 
     /**
-     * adds a completed polygon to the polygon state
-     * extracts coordinates from polygon to render  a static map
+     * adds a completed polygon path to the polygon state
      * @param {object} polygon 
      */
-    const getPolygonPath = (polygon) => {
-        setPolygons(prev => [...prev, polygon]);
-        const coords = polygon.getPath();
-        console.log(typeof coords);
-        console.log (coords);
-        console.log (coords.Gd.map(coord => `${coord.lat()}, ${coord.lng()}`));
-    }
+    const getPolygonPath = polygon => setPolygons(prev => [...prev, polygon.getPath()]);
+    
 
     /**
      * clears all polygons off the map
@@ -58,7 +52,8 @@ const RegionSelector = () => {
         setPolygons([]);
     }
 
-    
+    const explore = () => props.goExplorer(polygons);
+
     if (loadError) return 'error loading maps';
     if (!isLoaded) return 'LOADING';
 
@@ -68,6 +63,7 @@ const RegionSelector = () => {
             <Locate panTo={panTo} />
             <button>Select Area</button>
             <button onClick={resetMap}>Reset</button>
+            <button onClick={explore}>Explore Region</button>
             <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 zoom={15}
@@ -107,6 +103,11 @@ const Locate = ({ panTo }) => {
     )
 }
 
+/**
+ * Renders combobox for searching locations with suggestions
+ * @param {function} panTo 
+ * @returns 
+ */
 const Search = ({ panTo }) => {
    
     /**
