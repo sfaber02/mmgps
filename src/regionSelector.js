@@ -1,20 +1,18 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import './styles/map.css';
-import '@reach/combobox/styles.css';
-
 import { GoogleMap, useLoadScript, Marker, Polygon, DrawingManager } from '@react-google-maps/api';
 import { options, libraries, mapContainerStyle, center, polyOptions, drawOptions } from './mapConfig/config';
 import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
 import { Combobox, ComboboxInput, ComboboxPopover, ComboboxList, ComboboxOption } from '@reach/combobox';
+import './styles/map.css';
+import '@reach/combobox/styles.css';
 
 
 const GOOGLEMAPSKEY = process.env.REACT_APP_GOOGLE_MAPS_KEY;
 
 
-const TheMap = () => {
+const RegionSelector = () => {
     const mapRef = useRef();
-    // const [markers, setMarkers] = useState(() =>[]);
     const [polygons, setPolygons] = useState(() => []);
     
     /** loads all the google maps scripts */
@@ -32,29 +30,34 @@ const TheMap = () => {
     }, [])
     
     /**
-     * used for panning the pan to a specific lat and lng
+     * used for panning the map to a specific lat and lng
      */
     const panTo = useCallback(({lat, lng}) => {
         mapRef.current.panTo({lat, lng});
         mapRef.current.setZoom(18);
     }, [])
 
-    // const handleMapClick = (e) => {
-    //     console.log(markers);
-    //     setMarkers(prev => [...prev, {
-    //         lat: e.latLng.lat(),
-    //         lng: e.latLng.lng(),
-    //     }])
-    // }
-
+    /**
+     * adds a completed polygon to the polygon state
+     * extracts coordinates from polygon to render  a static map
+     * @param {object} polygon 
+     */
     const getPolygonPath = (polygon) => {
+        setPolygons(prev => [...prev, polygon]);
         const coords = polygon.getPath();
         console.log(typeof coords);
         console.log (coords);
         console.log (coords.Gd.map(coord => `${coord.lat()}, ${coord.lng()}`));
     }
 
-    const resetMap = () => {};
+    /**
+     * clears all polygons off the map
+     */
+    const resetMap = () => {
+        polygons.forEach(polygon => polygon.setMap(null));
+        setPolygons([]);
+    }
+
     
     if (loadError) return 'error loading maps';
     if (!isLoaded) return 'LOADING';
@@ -65,28 +68,19 @@ const TheMap = () => {
             <Locate panTo={panTo} />
             <button>Select Area</button>
             <button onClick={resetMap}>Reset</button>
-            <GoogleMap 
-                mapContainerStyle={mapContainerStyle} 
-                zoom={15} 
-                center={center} 
+            <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                zoom={15}
+                center={center}
                 options={options}
                 onLoad={onMapLoad}
-                // onClick={handleMapClick}
             >
-                {/* {markers.map(marker => <Marker 
-                    key={uuidv4()}
-                    position={{lat: marker.lat, lng: marker.lng}}
-                />)}
-                <Polygon 
-                    paths={markers}
-                    options={polyOptions} 
-                /> */}
-                <DrawingManager 
+                <DrawingManager
                     onPolygonComplete={getPolygonPath}
                     drawingMode='polygon'
                     options={drawOptions}
-                    
-                />   
+
+                />
             </ GoogleMap>
         </div>
     );
@@ -160,6 +154,6 @@ const Search = ({ panTo }) => {
 }
 
 
-export { TheMap }
+export { RegionSelector }
 
 
