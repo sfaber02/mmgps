@@ -10,7 +10,11 @@ import '@reach/combobox/styles.css';
 
 const GOOGLEMAPSKEY = process.env.REACT_APP_GOOGLE_MAPS_KEY;
 
-
+/**
+ * This component renders a dynamic map and allows the user to select an area by drawing a polygon
+ * The polygon will be used to generate a static map for the explorer component
+ * @param {object} props 
+ */
 const RegionSelector = (props) => {
     const mapRef = useRef();
     const [polygons, setPolygons] = useState(() => []);

@@ -8,12 +8,16 @@ import { Routes, Route, useNavigate} from 'react-router-dom';
 const API = process.env.REACT_APP_API_BACKEND;
 const DECRYPT_KEY = process.env.REACT_APP_CRYPTO_SECRET; 
 
+/**
+ * Handles login requests and new registration with backend
+ * @param {props} props 
+ */
 const Login = (props) => {
     const navigate = useNavigate();
     const [message, setMessage] = useState(() => '');
     const storedUser = props.storedUser;
 
-
+    /** If there is a user stored locally decrypt the PW and send info to DB to authenticate a login */
     useEffect(() => {
         if (storedUser) {
             const decrypted = AES.decrypt(storedUser.password, DECRYPT_KEY).toString(enc.Utf8);
@@ -21,6 +25,7 @@ const Login = (props) => {
         }
     }, [storedUser])
 
+    /** Sends inputted email and pw from login form to backend for authentication */
     const handleLoginAttempt = (e) => {
         e.preventDefault();
         const data = JSON.stringify({
@@ -43,6 +48,7 @@ const Login = (props) => {
         
     }
 
+    /** Sends locally stored email / pw to backend for authentication */
     const autoLogin = (email, password) => {
         const data = JSON.stringify({
           email,
@@ -63,6 +69,11 @@ const Login = (props) => {
           .catch((err) => handleFail(err));
     }
 
+    /**
+     * Creates a new user in the DB 
+     * will need A LOT more input checking here!
+     * @param {object} e - event object 
+     */
     const handleNewUserSubmit = (e) => {
         e.preventDefault();
         setMessage('');
@@ -95,15 +106,18 @@ const Login = (props) => {
             };
 
             axios(config)
-              .then((res) => handleNewUserSuccess(res))
-            //   .catch((err) => handleFail(err));
+              .then((res) => setMessage('New User Created Successfully!'))
+              .catch((err) => handleFail(err));
         }
     }
 
-    const handleNewUserSuccess = () => {
-        setMessage('New User Created Successfully!')
-    }
 
+    /**
+     * Passes username, email, jwt token, auto save option, and pw up to APP component for various functions
+     * @param {object} res 
+     * @param {boolean} save 
+     * @param {string} password 
+     */
     const handleLoginSuccess = (res, save, password) => {
         props.handleLogin(res.data.user, res.data.email, res.data.token, save, password)
     }
@@ -111,6 +125,7 @@ const Login = (props) => {
         setMessage(err.response.data.error);
     }
 
+    //Change route functions
     const handleNewUserClick = () => navigate('newUser');
     const backToLogin = () => navigate('');
 
