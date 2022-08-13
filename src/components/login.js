@@ -9,7 +9,7 @@ const API = process.env.REACT_APP_API_BACKEND;
  * Handles login requests and new registration with backend
  * @param {props} props 
  */
-const Login = ({handleLogin, storedUser}) => {
+const Login = ({handleLogin}) => {
 
     const navigate = useNavigate();
 
@@ -34,26 +34,19 @@ const Login = ({handleLogin, storedUser}) => {
         };
 
         axios(config)
-            .then((res) => handleLoginSuccess(res, e.target.elements.save.checked, e.target.elements.password.value))
+            .then((res) => {
+                console.log(res);
+                handleLogin(res);
+            })
             .catch((err) => handleFail(err));
         
     }
 
-
-    /**
-     * Passes username, email, jwt token, auto save option, and pw up to APP component for various functions
-     * @param {object} res 
-     * @param {boolean} save 
-     * @param {string} password 
-     */
-    const handleLoginSuccess = (res, save, password) => {
-        handleLogin(res.data.user, res.data.email, res.data.token, save, password);
-    }
     const handleFail = (err) => {
         setMessage(err.response.data.error);
     }
 
-    //Change route functions
+    // navigate to register page
     const handleNewUserClick = () => navigate('/register');
 
      return (
