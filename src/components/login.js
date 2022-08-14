@@ -18,19 +18,20 @@ const Login = ({handleLogin}) => {
     /** Sends inputted email and pw from login form to backend for authentication */
     const handleLoginAttempt = (e) => {
         e.preventDefault();
-        
+         
         const data = JSON.stringify({
           email: e.target.email.value,
           password: e.target.password.value,
         });
 
         const config = {
-          method: "post",
-          url: `${API}/users/login/`,
-          headers: {
-            "Content-Type": "application/json",
-          },
-          data: data,
+            method: "post",
+            url: `${API}/users/login/`,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: data,
+            withCredentials: true,
         };
 
         axios(config)
@@ -38,7 +39,10 @@ const Login = ({handleLogin}) => {
                 console.log(res);
                 handleLogin(res.data.accessToken);
             })
-            .catch((err) => setMessage(err.response.data.error));
+            .catch((err) => {
+                console.log("ERROR");
+                setMessage(err);
+            })
         
     }
 
