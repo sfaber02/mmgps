@@ -15,17 +15,14 @@ import { Login } from "./components/login.js";
 import { Register } from "./components/Register.js";
 import { NavBar } from "./components/navbar.js";
 import { RegionSelector } from "./components/regionSelector.js";
-import { Other } from "./components/other.js";
 import { Explorer } from "./components/explorer.js";
 import jwtDecode from "./helpers/jwtdecode.js";
 
 //Styles
 import "./styles/navbar.css";
 
-
 //Globals
 const API = process.env.REACT_APP_API_BACKEND;
-
 
 const App = () => {
     /** STATES AND REFS
@@ -70,8 +67,21 @@ const App = () => {
      * sets new false loggedIn state which will auto navigate back to login page
      */
     const logout = () => {
-        setUser({});
-        setLoggedIn(false);
+        axios({
+            method: "post",
+            url: `${API}/users/logout/`,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            withCredentials: true,
+        })
+            .then((res) => {
+                console.log(res.data.msg);
+                setUser({});
+                setLoggedIn(false);
+                sessionStorage.clear();
+            })
+            .catch((err) => console.log(err));
     };
 
     //Route changers
@@ -83,13 +93,12 @@ const App = () => {
 
     return (
         <>
-            {loggedIn && <NavBar logout={logout} />}
+            {loggedIn && <NavBar logout={logout} user={user} />}
             <Routes>
                 <Route
                     path="/"
                     element={<RegionSelector goExplorer={goExplorer} />}
                 />
-                <Route path="/other" element={<Other />} />
                 <Route
                     path="/login"
                     element={<Login handleLogin={handleLogin} />}
