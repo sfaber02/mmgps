@@ -36,14 +36,10 @@ const Login = ({handleLogin}) => {
         axios(config)
             .then((res) => {
                 console.log(res);
-                handleLogin(res);
+                handleLogin(res.data.accessToken);
             })
-            .catch((err) => handleFail(err));
+            .catch((err) => setMessage(err.response.data.error));
         
-    }
-
-    const handleFail = (err) => {
-        setMessage(err.response.data.error);
     }
 
     // navigate to register page

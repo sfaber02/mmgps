@@ -15,11 +15,10 @@ import { NavBar } from "./components/navbar.js";
 import { RegionSelector } from "./components/regionSelector.js";
 import { Other } from "./components/other.js";
 import { Explorer } from "./components/explorer.js";
-import  jwtDecode  from "./helpers/jwtdecode.js";
+import jwtDecode from "./helpers/jwtdecode.js";
 
 //Styles
 import "./styles/navbar.css";
-
 
 const App = () => {
     /** STATES AND REFS
@@ -31,25 +30,22 @@ const App = () => {
     const [user, setUser] = useState(() => {});
     const navigate = useNavigate();
 
-    /** Sends user to login page on page launch or automatically logs in last user if auto-login was selected */
-    useEffect(
-        () => (!loggedIn ? navigate("login") : navigate("/")),
-        [loggedIn]
-    );
+    useEffect(() => {
+        
+    }, []);
 
-    /**
-     * Sets user state based on info return from DB
-     * sets logged in state to true which will auto navigate to home route
-     * stores email / encrypted password locally if auto login option was selected
-     * @param {string} name
-     * @param {string} email
-     * @param {string} token
-     * @param {boolean} save
-     * @param {string} password
-     */
-    const handleLogin = (tokens) => {
-        const decodedUser = jwtDecode(tokens.accessToken);
-        setUser();
+    /** Sends user to login page on page launch or automatically logs in last user if auto-login was selected */
+    useEffect(() => {
+        !loggedIn ? navigate("/login") : navigate("/");
+    }, [loggedIn]);
+
+    const handleLogin = (accessToken) => {
+        // save access token to session storage
+        sessionStorage.setItem('accessToken', accessToken);
+
+        // decode user info from access token, set user state, set logged in
+        const { email, username, user_id } = jwtDecode(accessToken);
+        setUser({ email, username, user_id });
         setLoggedIn(true);
     };
 
@@ -70,22 +66,18 @@ const App = () => {
             state: { polygons: JSON.stringify(polygons) },
         });
 
-    //ROUTES
-    const Home = () => <RegionSelector goExplorer={goExplorer} />;
-
     return (
         <>
-            {loggedIn && <NavBar user={user} logout={logout} />}
+            {loggedIn && <NavBar logout={logout} />}
             <Routes>
-                <Route path="/" element={<Home />} />
+                <Route
+                    path="/"
+                    element={<RegionSelector goExplorer={goExplorer} />}
+                />
                 <Route path="/other" element={<Other />} />
                 <Route
                     path="/login"
-                    element={
-                        <Login
-                            handleLogin={handleLogin}
-                        />
-                    }
+                    element={<Login handleLogin={handleLogin} />}
                 />
                 <Route path="/register" element={<Register />} />
                 <Route path="/explorer" element={<Explorer />} />
