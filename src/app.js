@@ -1,11 +1,9 @@
 //Dependencies
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Route,
     Routes,
     useNavigate,
-    Outlet,
-    NavigationType,
 } from "react-router-dom";
 
 import axios from "axios";
@@ -28,10 +26,13 @@ const App = () => {
     /** STATES AND REFS
      * loggedIn - boolean state for user logged in status
      * user - stores username, email, and JWT token for logged in user
-     * polys - stores saved polygons from regionSelector component
+     * polygonss - stores saved polygons from regionSelector component
      */
     const [loggedIn, setLoggedIn] = useState(false);
     const [user, setUser] = useState(() => {});
+    const [polygons, setPolygons] = useState(() => []);
+
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -84,27 +85,20 @@ const App = () => {
             .catch((err) => console.log(err));
     };
 
-    //Route changers
-    // const goOther = () => navigate("/other");
-    const goExplorer = (polygons) =>
-        navigate("/explorer", {
-            state: { polygons: JSON.stringify(polygons) },
-        });
-
     return (
         <>
             {loggedIn && <NavBar logout={logout} user={user} />}
             <Routes>
                 <Route
                     path="/"
-                    element={<RegionSelector goExplorer={goExplorer} />}
+                    element={<RegionSelector polygons={polygons} setPolygons={setPolygons} />}
                 />
                 <Route
                     path="/login"
                     element={<Login handleLogin={handleLogin} />}
                 />
                 <Route path="/register" element={<Register />} />
-                <Route path="/explorer" element={<Explorer />} />
+                <Route path="/explorer" element={<Explorer polygons={polygons} />} />
             </Routes>
         </>
     );
