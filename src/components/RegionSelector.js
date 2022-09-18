@@ -57,14 +57,14 @@ const RegionSelector = ({ polygons, setPolygons }) => {
      * adds a completed polygon path to the polygon state
      * @param {object} polygon
      */
-    const getPolygonPath = (polygon) =>
-        setPolygons((prev) => [...prev, polygon.getPath()]);
+    const getPolygonPath = polygon => setPolygons(polygon);
 
     /**
      * clears all polygons off the map
      */
     const resetMap = () => {
-        polygons.forEach((polygon) => polygon.setMap(null));
+        // polygons.forEach((polygon) => polygon.setMap(null));
+        polygons.setMap(null);
         setPolygons([]);
     };
 
