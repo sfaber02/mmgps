@@ -79,9 +79,9 @@ const RegionSelector = ({ polygons, setPolygons }) => {
             </button>
             <GoogleMap
                 mapContainerStyle={mapContainerStyle}
-                zoom={3}  // default zoom level
+                zoom={15}  // default zoom level
                 center={center}
-                options={options}
+                // options={options}
                 onLoad={onMapLoad}
             >
                 <DrawingManager
