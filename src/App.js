@@ -9,11 +9,11 @@ import {
 import axios from "axios";
 
 //Components
-import { Login } from "./components/login.js";
+import { Login } from "./components/Login.js";
 import { Register } from "./components/Register.js";
-import { NavBar } from "./components/navbar.js";
-import { RegionSelector } from "./components/regionSelector.js";
-import { Explorer } from "./components/explorer.js";
+import { NavBar } from "./components/Navbar.js";
+import { RegionSelector } from "./components/RegionSelector.js";
+import { Explorer } from "./components/Explorer.js";
 import jwtDecode from "./helpers/jwtdecode.js";
 
 //Styles

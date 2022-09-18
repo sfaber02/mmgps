@@ -9,6 +9,7 @@ const Explorer = ({ polygons }) => {
             {polygons.length > 0 ? (
                 <p>
                     polygons
+                    
                 </p>
             ) : (
                 <p>No Polygons</p>
