@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 
+import { Canvas } from "./Explorer-SubComponents/Canvas";
+
+import "../styles/Explorer/explorer.scss"
+
 const Explorer = ({ polygons }) => {
     const [coords, setCoords] = useState({});
     console.log(polygons);
@@ -20,6 +24,7 @@ const Explorer = ({ polygons }) => {
             ) : (
                 <p>No Polygons</p>
             )}
+            <Canvas />
         </>
     );
 };

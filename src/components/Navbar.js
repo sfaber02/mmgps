@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 const NavBar = ({user, logout}) => {
     const navigate = useNavigate();
 
-    // useEffect(() => setUser(user), [props.user]);
-
     return (
         <div id="navBarContainer">
             <p>{user.username}</p>

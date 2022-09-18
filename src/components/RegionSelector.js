@@ -50,7 +50,7 @@ const RegionSelector = ({ polygons, setPolygons }) => {
      */
     const panTo = useCallback(({ lat, lng }) => {
         mapRef.current.panTo({ lat, lng });
-        mapRef.current.setZoom(18);
+        mapRef.current.setZoom(18); // zoom level after pan
     }, []);
 
     /**
@@ -59,11 +59,8 @@ const RegionSelector = ({ polygons, setPolygons }) => {
      */
     const getPolygonPath = polygon => setPolygons(polygon);
 
-    /**
-     * clears all polygons off the map
-     */
+    /** clears all polygons off the map */
     const resetMap = () => {
-        // polygons.forEach((polygon) => polygon.setMap(null));
         polygons.setMap(null);
         setPolygons([]);
     };
@@ -82,7 +79,7 @@ const RegionSelector = ({ polygons, setPolygons }) => {
             </button>
             <GoogleMap
                 mapContainerStyle={mapContainerStyle}
-                zoom={15}
+                zoom={3}  // default zoom level
                 center={center}
                 options={options}
                 onLoad={onMapLoad}
