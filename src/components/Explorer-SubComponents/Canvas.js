@@ -35,7 +35,7 @@ export const Canvas = ({ coords }) => {
 
               //calculate multiplier to convert to new res
               // hard coded to 500x500 target res right now
-              setMultiplier(width > height ? 500 / width : 500 / height);
+              setMultiplier(width > height  ? 500 / width : 500 / height);
           }
       }, [coords]);
 
@@ -46,14 +46,14 @@ export const Canvas = ({ coords }) => {
         console.log("DRAW");
         let start = {
             x: (coords[0].lng - minMax.lng.min) * multiplier,
-            y: 500 - ((coords[0].lat - minMax.lat.min) * multiplier),
+            y: 500 - ((coords[0].lat - minMax.lat.min) * multiplier * 1.36),
         };
         console.log('start', start);
         ctx.moveTo(start.x, start.y);
         for (let i = 1; i < coords.length; i++) {
             let coord = {
                 x: (coords[i].lng - minMax.lng.min) * multiplier,
-                y: 500 - ((coords[i].lat - minMax.lat.min) * multiplier),
+                y: 500 - ((coords[i].lat - minMax.lat.min) * multiplier * 1.36),
             };
             console.log("coord", coord);
             ctx.lineTo(coord.x, coord.y);
