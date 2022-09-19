@@ -30,7 +30,7 @@ const App = () => {
      */
     const [loggedIn, setLoggedIn] = useState(false);
     const [user, setUser] = useState(() => {});
-    const [polygons, setPolygons] = useState(() => []);
+    const [polygons, setPolygons] = useState(() => null);
 
 
     const navigate = useNavigate();

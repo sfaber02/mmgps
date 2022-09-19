@@ -9,7 +9,6 @@ const Explorer = ({ polygons }) => {
         
     useEffect(() => {
         if (polygons) {
-            
             let path = polygons.getPath();
             let bounds = [];
             for (let i = 0; i < path.length; i++) {
@@ -19,6 +18,8 @@ const Explorer = ({ polygons }) => {
                 });
             }
             setCoords(bounds);
+        } else {
+           setCoords(null) 
         }
     }, [polygons]);
 
@@ -30,12 +31,12 @@ const Explorer = ({ polygons }) => {
 
     return (
         <>
-            {coords.length > 0 ? (
+            <Canvas coords={coords} />
+            {coords ? (
                 coords.map((e) => <p>{`lat: ${e.lat}  lng: ${e.lng}\n`}</p>)
             ) : (
                 <p>No Polygons</p>
             )}
-            <Canvas coords={coords} />
         </>
     );
 };
