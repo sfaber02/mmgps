@@ -19,8 +19,8 @@ const Explorer = ({ polygons }) => {
              let bounds = [];
              for (let i = 0; i < path.length; i++) {
                  bounds.push({
-                     lat: path.getAt(i).lat() + 90, // convert coords to only postive nums
-                     lng: path.getAt(i).lng() + 180, // convert coords to only positive
+                     lat: path.getAt(i).lat(),
+                     lng: path.getAt(i).lng() 
                  });
              }
              setCoords(bounds);
@@ -48,25 +48,26 @@ const Explorer = ({ polygons }) => {
                 if (coord.lng < tempMinMax.lng.min)
                     tempMinMax.lng.min = coord.lng;
             }
-            console.log("tempMinMax", tempMinMax);
+            setMinMax(tempMinMax);
 
             // determine total dimensions of shape by subtracting min from max
             const width = tempMinMax.lng.max - tempMinMax.lng.min;
             const height = tempMinMax.lat.max - tempMinMax.lat.min;
-            setMinMax(tempMinMax);
 
             console.log(width, height);
 
             //calculate multiplier to convert to new res
             // hard coded to 500x500 target res right now
-            setMultiplier(width > height ? 500 / width : 500 / height);
+            // find which has bigger span width or height
+            // multiplier = bigger dimension / target res
+            setMultiplier(width > height ? 500 / width : 500 / (height * 1.36));
         }
     }, [coords]);
 
    
 
     return (
-        <>
+        <div className='explorer-container'>
             <Canvas coords={coords} minMax={minMax} multiplier={multiplier} />
             <StaticMap
                 coords={coords}
@@ -78,7 +79,7 @@ const Explorer = ({ polygons }) => {
             ) : (
                 <p>No Polygons</p>
             )}
-        </>
+        </ div>
     );
 };
 

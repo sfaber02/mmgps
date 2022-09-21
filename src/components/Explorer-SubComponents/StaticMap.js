@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import { GoogleMap, useLoadScript } from "@react-google-maps/api";
-import { libraries, mapContainerStyle, options } from "../../mapConfig/config";
+import { libraries, mapContainerStyle, options } from "../../mapConfig/explorer-config";
 
 const GOOGLEMAPSKEY = process.env.REACT_APP_GOOGLE_MAPS_KEY;
 
@@ -20,18 +20,14 @@ export const StaticMap = ({ coords, minMax, multiplier }) => {
 
     useEffect(() => {
         if (minMax) {
-            console.log('minMax', minMax);
             setCenter({
-                lat: (minMax.lat.max - minMax.lat.min) / 2,
-                lng: (minMax.lng.max - minMax.lng.min) / 2,
+                lat: (minMax.lat.max + minMax.lat.min) / 2,
+                lng: (minMax.lng.max + minMax.lng.min) / 2,
             });
         }
     }, [minMax]);
 
-    useEffect(() => {
-        console.log ('center', center);
-    }, [center]);
-
+    
     if (loadError) return "error loading maps";
     if (!isLoaded) return "LOADING";
 

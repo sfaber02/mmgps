@@ -10,7 +10,7 @@ import {
     mapContainerStyle,
     center,
     drawOptions,
-} from "../mapConfig/config";
+} from "../mapConfig/region-selector-config";
 
 import "../styles/map.css";
 import "@reach/combobox/styles.css";
@@ -83,7 +83,7 @@ const RegionSelector = ({ polygons, setPolygons }) => {
                 mapContainerStyle={mapContainerStyle}
                 zoom={15}  // default zoom level
                 center={center}
-                // options={options}
+                options={options}
                 onLoad={onMapLoad}
             >
                 <DrawingManager
