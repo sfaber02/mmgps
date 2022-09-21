@@ -32,12 +32,14 @@ export const StaticMap = ({ coords, minMax, multiplier }) => {
     if (!isLoaded) return "LOADING";
 
     return (
-        <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            zoom={15} // default zoom level
-            center= {center ? center : { lat: 27.316424, lng: 12.955319 }}
-            options={options}
-            onLoad={onMapLoad}
-        ></ GoogleMap>
+        <div className='static-map-container'>
+            <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                zoom={15} // default zoom level
+                center= {center ? center : { lat: 27.316424, lng: 12.955319 }}
+                options={options}
+                onLoad={onMapLoad}
+            ></ GoogleMap>
+        </div>
     );
 };

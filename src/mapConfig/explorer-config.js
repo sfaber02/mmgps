@@ -8,9 +8,10 @@ const libraries = ["places", "drawing"];
 const mapContainerStyle = {
     width: "500px",
     height: "500px",
-    margin: "auto",
-    marginTop: "20px",
+    // margin: "auto",
+    // marginTop: "20px",
     borderRadius: "10px",
+    class:'static-map-container'
 };
 
 const center = {
