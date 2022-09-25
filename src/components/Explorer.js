@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { Canvas } from "./Explorer-SubComponents/Canvas";
+import { Mask } from "./Explorer-SubComponents/Mask";
 import { StaticMap } from "./Explorer-SubComponents/StaticMap";
 
 import "../styles/Explorer/explorer.scss";
@@ -12,22 +13,23 @@ const Explorer = ({ polygons }) => {
         lat: { min: Infinity, max: -Infinity },
         lng: { min: Infinity, max: -Infinity },
     });
+    const [polygonPath, setPolygonPath] = useState("");
 
-     useEffect(() => {
-         if (polygons) {
-             let path = polygons.getPath();
-             let bounds = [];
-             for (let i = 0; i < path.length; i++) {
-                 bounds.push({
-                     lat: path.getAt(i).lat(),
-                     lng: path.getAt(i).lng() 
-                 });
-             }
-             setCoords(bounds);
-         } else {
-             setCoords(null);
-         }
-     }, [polygons]);
+    useEffect(() => {
+        if (polygons) {
+            let path = polygons.getPath();
+            let bounds = [];
+            for (let i = 0; i < path.length; i++) {
+                bounds.push({
+                    lat: path.getAt(i).lat(),
+                    lng: path.getAt(i).lng(),
+                });
+            }
+            setCoords(bounds);
+        } else {
+            setCoords(null);
+        }
+    }, [polygons]);
 
     // finds coords min/ max and sets multiplier
     useEffect(() => {
@@ -64,22 +66,28 @@ const Explorer = ({ polygons }) => {
         }
     }, [coords]);
 
-   
-
     return (
-        <div className='explorer-container'>
-            <Canvas coords={coords} minMax={minMax} multiplier={multiplier} />
+        <div className="explorer-container">
+            <Mask
+                coords={coords}
+                minMax={minMax}
+                multiplier={multiplier}
+                polygonPath={polygonPath}
+                setPolygonPath={setPolygonPath}
+            />
+            {/* <Canvas coords={coords} minMax={minMax} multiplier={multiplier} /> */}
             <StaticMap
                 coords={coords}
                 minMax={minMax}
                 multiplier={multiplier}
+                polygonPath={polygonPath}
             />
             {coords ? (
                 coords.map((e) => <p>{`lat: ${e.lat}  lng: ${e.lng}\n`}</p>)
             ) : (
                 <p>No Polygons</p>
             )}
-        </ div>
+        </div>
     );
 };
 
