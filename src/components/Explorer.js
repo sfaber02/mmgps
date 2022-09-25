@@ -68,19 +68,19 @@ const Explorer = ({ polygons }) => {
 
     return (
         <div className="explorer-container">
-            <Mask
+            {/* <Mask
                 coords={coords}
                 minMax={minMax}
                 multiplier={multiplier}
                 polygonPath={polygonPath}
                 setPolygonPath={setPolygonPath}
-            />
+            /> */}
             {/* <Canvas coords={coords} minMax={minMax} multiplier={multiplier} /> */}
             <StaticMap
                 coords={coords}
                 minMax={minMax}
                 multiplier={multiplier}
-                polygonPath={polygonPath}
+                // polygonPath={polygonPath}
             />
             {coords ? (
                 coords.map((e) => <p>{`lat: ${e.lat}  lng: ${e.lng}\n`}</p>)

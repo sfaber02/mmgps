@@ -14,7 +14,7 @@ import { Register } from "./components/Register.js";
 import { NavBar } from "./components/Navbar.js";
 import { RegionSelector } from "./components/RegionSelector.js";
 import { Explorer } from "./components/Explorer.js";
-import jwtDecode from "./helpers/jwtdecode.js";
+import jwtDecode from "./utils/jwtdecode.js";
 
 //Styles
 import "./styles/navbar.css";

@@ -1,10 +1,11 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import { GoogleMap, useLoadScript } from "@react-google-maps/api";
 import { libraries, mapContainerStyle, options } from "../../mapConfig/explorer-config";
+import { generateSVGPath } from "../../utils/polygonSVGgenerator";
 
 const GOOGLEMAPSKEY = process.env.REACT_APP_GOOGLE_MAPS_KEY;
 
-export const StaticMap = ({ coords, minMax, multiplier, polygonPath }) => {
+export const StaticMap = ({ coords, minMax, multiplier}) => {
     const [center, setCenter] = useState(null);
     const mapRef = useRef();
     const staticMapRef = useRef(null);
@@ -15,9 +16,9 @@ export const StaticMap = ({ coords, minMax, multiplier, polygonPath }) => {
         libraries,
     });
 
-    const onMapLoad = useCallback((map) => {
-        mapRef.current = map;
-    }, []);
+    // const onMapLoad = useCallback((map) => {
+    //     mapRef.current = map;
+    // }, []);
 
     useEffect(() => {
         if (minMax) {
@@ -29,10 +30,10 @@ export const StaticMap = ({ coords, minMax, multiplier, polygonPath }) => {
     }, [minMax]);
 
     useEffect(() => {
-        if (staticMapRef.current) {
-            staticMapRef.current.style.clipPath = `path('${polygonPath}')`;
+        if (staticMapRef.current && coords && minMax && multiplier) {
+            staticMapRef.current.style.clipPath = `path('${generateSVGPath(coords, minMax, multiplier)}')`;
         }
-    }, [polygonPath]);
+    }, [coords, minMax, multiplier]);
 
     
     if (loadError) return "error loading maps";
@@ -45,7 +46,7 @@ export const StaticMap = ({ coords, minMax, multiplier, polygonPath }) => {
                 zoom={15} // default zoom level
                 center= {center ? center : { lat: 27.316424, lng: 12.955319 }}
                 options={options}
-                onLoad={onMapLoad}
+                // onLoad={onMapLoad}
             ></ GoogleMap>
         </div>
     );

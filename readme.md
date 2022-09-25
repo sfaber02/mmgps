@@ -1,5 +1,10 @@
 # MMGPS
+https://trello.com/b/6Ye56wAD/mmgps
 
+
+## Release Notes
+#### 9/25/22
+- static map with mask now working in a primative state
 
 
 
@@ -15,13 +20,3 @@
 - use-places-autocomplete
 - uuidv4
 
-
-
-## TODO
-
-- map area selection and rendering of a static map
-- saving map selections and progress to DB
--  
-
-## Bugs / Issues
-- Reset button only works on complete polygons not one's in porgress
