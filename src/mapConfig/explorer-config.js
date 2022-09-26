@@ -6,12 +6,12 @@ const libraries = ["places", "drawing"];
 
 //MAP OPTIONS
 const mapContainerStyle = {
-    width: "500px",
-    height: "500px",
+    width: "90vw",
+    height: "85vh",
     // margin: "auto",
     // marginTop: "20px",
     borderRadius: "10px",
-    class:'static-map-container'
+    class: "static-map-container",
 };
 
 const center = {

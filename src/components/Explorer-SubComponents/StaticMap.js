@@ -5,8 +5,9 @@ import { generateSVGPath } from "../../utils/polygonSVGgenerator";
 
 const GOOGLEMAPSKEY = process.env.REACT_APP_GOOGLE_MAPS_KEY;
 
-export const StaticMap = ({ coords, minMax, multiplier}) => {
+export const StaticMap = ({ coords, minMax, multiplier, dimensions}) => {
     const [center, setCenter] = useState(null);
+    
     const mapRef = useRef();
     const staticMapRef = useRef(null);
 
@@ -20,6 +21,8 @@ export const StaticMap = ({ coords, minMax, multiplier}) => {
     //     mapRef.current = map;
     // }, []);
 
+    
+
     useEffect(() => {
         if (minMax) {
             setCenter({
@@ -31,7 +34,7 @@ export const StaticMap = ({ coords, minMax, multiplier}) => {
 
     useEffect(() => {
         if (staticMapRef.current && coords && minMax && multiplier) {
-            staticMapRef.current.style.clipPath = `path('${generateSVGPath(coords, minMax, multiplier)}')`;
+            staticMapRef.current.style.clipPath = `path('${generateSVGPath(coords, minMax, multiplier, dimensions)}')`;
         }
     }, [coords, minMax, multiplier]);
 

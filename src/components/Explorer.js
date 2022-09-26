@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Canvas } from "./Explorer-SubComponents/Canvas";
 import { Mask } from "./Explorer-SubComponents/Mask";
 import { StaticMap } from "./Explorer-SubComponents/StaticMap";
+import { mapContainerStyle } from "../mapConfig/explorer-config";
 
 import "../styles/Explorer/explorer.scss";
 
@@ -14,6 +15,27 @@ const Explorer = ({ polygons }) => {
         lng: { min: Infinity, max: -Infinity },
     });
     const [polygonPath, setPolygonPath] = useState("");
+    const [dimensions, setDimensions] = useState();
+
+    useEffect(() => {
+        let width =
+            window.innerWidth *
+            (Number(mapContainerStyle.width.split("v")[0]) / 100);
+        let height =
+            window.innerHeight *
+            (Number(mapContainerStyle.height.split("v")[0]) / 100);
+        setDimensions({width, height});
+    }, []);
+
+    window.onresize = () => {
+        let width =
+            window.innerWidth *
+            (Number(mapContainerStyle.width.split("v")[0]) / 100);
+        let height =
+            window.innerHeight *
+            (Number(mapContainerStyle.height.split("v")[0]) / 100);
+        setDimensions({ width, height });
+    };
 
     useEffect(() => {
         if (polygons) {
@@ -34,7 +56,7 @@ const Explorer = ({ polygons }) => {
     // finds coords min/ max and sets multiplier
     useEffect(() => {
         // get max/min lat and lng
-        if (coords) {
+        if (coords && dimensions) {
             const tempMinMax = {
                 lat: { min: Infinity, max: -Infinity },
                 lng: { min: Infinity, max: -Infinity },
@@ -62,9 +84,9 @@ const Explorer = ({ polygons }) => {
             // hard coded to 500x500 target res right now
             // find which has bigger span width or height
             // multiplier = bigger dimension / target res
-            setMultiplier(width > height ? 500 / width : 500 / (height * 1.36));
+            setMultiplier(width > height ? dimensions.width / width : dimensions.height / (height * 1.36));
         }
-    }, [coords]);
+    }, [coords, dimensions]);
 
     return (
         <div className="explorer-container">
@@ -80,6 +102,7 @@ const Explorer = ({ polygons }) => {
                 coords={coords}
                 minMax={minMax}
                 multiplier={multiplier}
+                dimensions={dimensions}
                 // polygonPath={polygonPath}
             />
             {coords ? (

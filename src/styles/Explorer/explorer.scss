@@ -7,16 +7,16 @@
     .explorer-canvas {
         z-index: 9000;
         margin-top: 20px;
-        width: 500px;
-        height: 500px;
+        // width: 500px;
+        // height: 500px;
         border: 2px solid purple;
         background-color: yellow;
 
     }
     .static-map-container {
         z-index: 0;
-        height: 500px;
-        width: 500px;
+        // height: 500px;
+        // width: 500px;
         // position: relative;
         // top: -500px;
     }
@@ -25,8 +25,8 @@
         margin: 0;
         padding: 0;
         background-color: blue;
-        width: 500px;
-        height: 500px;
+        // width: 500px;
+        // height: 500px;
         
     }
 }
