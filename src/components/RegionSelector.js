@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Locate } from "./RegionSelector-SubComponents/Locate";
 import { Search } from "./RegionSelector-SubComponents/Search";
-import { Explorer } from './Explorer';
+import { Explorer } from "./Explorer";
 import { Canvas } from "./Explorer-SubComponents/Canvas";
 
 const GOOGLEMAPSKEY = process.env.REACT_APP_GOOGLE_MAPS_KEY;
@@ -59,7 +59,7 @@ const RegionSelector = ({ polygons, setPolygons }) => {
      * adds a completed polygon path to the polygon state
      * @param {object} polygon
      */
-    const getPolygonPath = polygon => setPolygons(polygon);
+    const getPolygonPath = (polygon) => setPolygons(polygon);
 
     /** clears all polygons off the map */
     const resetMap = () => {
@@ -71,29 +71,31 @@ const RegionSelector = ({ polygons, setPolygons }) => {
     if (!isLoaded) return "LOADING";
 
     return (
-        <div id="mapContainer">
-            <Search panTo={panTo} />
-            <Locate panTo={panTo} />
-            <button>Select Area</button>
-            <button onClick={resetMap}>Reset</button>
-            <button onClick={() => navigate("/explorer")}>
-                Explore Region
-            </button>
-            <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                zoom={15}  // default zoom level
-                center={center}
-                options={options}
-                onLoad={onMapLoad}
-            >
-                <DrawingManager
-                    onPolygonComplete={getPolygonPath}
-                    drawingMode="polygon"
-                    options={drawOptions}
-                />
-            </GoogleMap>
+        <>
+            <div className="region-selector-container">
+                <Search panTo={panTo} />
+                <Locate panTo={panTo} />
+                <button>Select Area</button>
+                <button onClick={resetMap}>Reset</button>
+                <button onClick={() => navigate("/explorer")}>
+                    Explore Region
+                </button>
+                <GoogleMap
+                    mapContainerStyle={mapContainerStyle}
+                    zoom={15} // default zoom level
+                    center={center}
+                    options={options}
+                    onLoad={onMapLoad}
+                >
+                    <DrawingManager
+                        onPolygonComplete={getPolygonPath}
+                        drawingMode="polygon"
+                        options={drawOptions}
+                    />
+                </GoogleMap>
+            </div>
             <Explorer polygons={polygons} />
-        </div>
+        </>
     );
 };
 

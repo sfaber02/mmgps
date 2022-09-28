@@ -6,7 +6,7 @@ const NavBar = ({user, logout}) => {
     const navigate = useNavigate();
 
     return (
-        <div id="navBarContainer">
+        <div className="navbar-container">
             <p>{user.username}</p>
             <button onClick={() => navigate('/')}>
                 Region Selector

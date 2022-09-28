@@ -34,13 +34,14 @@ export const StaticMap = ({ coords, minMax, multiplier, dimensions}) => {
 
     useEffect(() => {
         if (staticMapRef.current && coords && minMax && multiplier) {
+            console.log('1111');
             staticMapRef.current.style.clipPath = `path('${generateSVGPath(coords, minMax, multiplier, dimensions)}')`;
         }
-    }, [coords, minMax, multiplier]);
+    }, [coords, minMax, multiplier, dimensions]);
 
     
-    if (loadError) return "error loading maps";
-    if (!isLoaded) return "LOADING";
+    // if (loadError) return "error loading maps";
+    // if (!isLoaded) return "LOADING";
 
     return (
         <div className='static-map-container' ref={staticMapRef}>

@@ -18,6 +18,7 @@ const Explorer = ({ polygons }) => {
     const [dimensions, setDimensions] = useState();
 
     useEffect(() => {
+        // find width and height in pixels based on window size and mapContainer CSS size
         let width =
             window.innerWidth *
             (Number(mapContainerStyle.width.split("v")[0]) / 100);
@@ -28,6 +29,8 @@ const Explorer = ({ polygons }) => {
     }, []);
 
     window.onresize = () => {
+        console.log('WINDOW RESIZE', window.innerWidth, window.innerHeight);
+        // set new dimensions if window is resized
         let width =
             window.innerWidth *
             (Number(mapContainerStyle.width.split("v")[0]) / 100);
