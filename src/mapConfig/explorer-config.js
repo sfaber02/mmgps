@@ -23,7 +23,8 @@ const options = {
     styles: mapStyle,
     disableDefaultUI: true,
     zoomControl: false,
-
+    gestureHandling: 'none',
+    scrollwheel: false,
 };
 
 export {libraries, mapContainerStyle, center, options};

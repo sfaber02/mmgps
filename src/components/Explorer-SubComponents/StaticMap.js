@@ -1,13 +1,17 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import { GoogleMap, useLoadScript } from "@react-google-maps/api";
-import { libraries, mapContainerStyle, options } from "../../mapConfig/explorer-config";
+import {
+    libraries,
+    mapContainerStyle,
+    options,
+} from "../../mapConfig/explorer-config";
 import { generateSVGPath } from "../../utils/polygonSVGgenerator";
 
 const GOOGLEMAPSKEY = process.env.REACT_APP_GOOGLE_MAPS_KEY;
 
-export const StaticMap = ({ coords, minMax, multiplier, dimensions}) => {
+export const StaticMap = ({ coords, minMax, multiplier, dimensions }) => {
     const [center, setCenter] = useState(null);
-    
+
     const mapRef = useRef();
     const staticMapRef = useRef(null);
 
@@ -21,8 +25,6 @@ export const StaticMap = ({ coords, minMax, multiplier, dimensions}) => {
     //     mapRef.current = map;
     // }, []);
 
-    
-
     useEffect(() => {
         if (minMax) {
             setCenter({
@@ -32,26 +34,30 @@ export const StaticMap = ({ coords, minMax, multiplier, dimensions}) => {
         }
     }, [minMax]);
 
+    // generate clip path based on coords and map container dimensions
     useEffect(() => {
         if (staticMapRef.current && coords && minMax && multiplier) {
-            console.log('1111');
-            staticMapRef.current.style.clipPath = `path('${generateSVGPath(coords, minMax, multiplier, dimensions)}')`;
+            staticMapRef.current.style.clipPath = `path('${generateSVGPath(
+                coords,
+                minMax,
+                multiplier,
+                dimensions
+            )}')`;
         }
     }, [coords, minMax, multiplier, dimensions]);
 
-    
     // if (loadError) return "error loading maps";
     // if (!isLoaded) return "LOADING";
 
     return (
-        <div className='static-map-container' ref={staticMapRef}>
+        <div className="static-map-container" ref={staticMapRef}>
             <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 zoom={15} // default zoom level
-                center= {center ? center : { lat: 27.316424, lng: 12.955319 }}
+                center={center ? center : { lat: 27.316424, lng: 12.955319 }}
                 options={options}
                 // onLoad={onMapLoad}
-            ></ GoogleMap>
+            ></GoogleMap>
         </div>
     );
 };

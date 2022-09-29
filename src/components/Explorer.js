@@ -14,32 +14,10 @@ const Explorer = ({ polygons }) => {
         lat: { min: Infinity, max: -Infinity },
         lng: { min: Infinity, max: -Infinity },
     });
-    const [polygonPath, setPolygonPath] = useState("");
+    // const [polygonPath, setPolygonPath] = useState("");
     const [dimensions, setDimensions] = useState();
 
-    useEffect(() => {
-        // find width and height in pixels based on window size and mapContainer CSS size
-        let width =
-            window.innerWidth *
-            (Number(mapContainerStyle.width.split("v")[0]) / 100);
-        let height =
-            window.innerHeight *
-            (Number(mapContainerStyle.height.split("v")[0]) / 100);
-        setDimensions({width, height});
-    }, []);
-
-    window.onresize = () => {
-        console.log('WINDOW RESIZE', window.innerWidth, window.innerHeight);
-        // set new dimensions if window is resized
-        let width =
-            window.innerWidth *
-            (Number(mapContainerStyle.width.split("v")[0]) / 100);
-        let height =
-            window.innerHeight *
-            (Number(mapContainerStyle.height.split("v")[0]) / 100);
-        setDimensions({ width, height });
-    };
-
+    // turn polygon path from google maps API into lat, lng coords
     useEffect(() => {
         if (polygons) {
             let path = polygons.getPath();
@@ -56,7 +34,38 @@ const Explorer = ({ polygons }) => {
         }
     }, [polygons]);
 
-    // finds coords min/ max and sets multiplier
+    useEffect(() => {
+        // find width and height in pixels based on window size and mapContainer CSS size
+        let width =
+            window.innerWidth *
+            (Number(mapContainerStyle.width.split("v")[0]) / 100);
+        let height =
+            window.innerHeight *
+            (Number(mapContainerStyle.height.split("v")[0]) / 100);
+        setDimensions({ width, height });
+    }, []);
+
+    window.onresize = () => {
+        console.log("WINDOW RESIZE", window.innerWidth, window.innerHeight);
+        // set new dimensions if window is resized
+        let width =
+            window.innerWidth *
+            (Number(mapContainerStyle.width.split("v")[0]) / 100);
+        let height =
+            window.innerHeight *
+            (Number(mapContainerStyle.height.split("v")[0]) / 100);
+        setDimensions({ width, height });
+    };
+
+    useEffect(() => {
+        console.log('dimensions', dimensions);
+    }, [dimensions]);
+
+    useEffect(() => {
+        console.log('multiplier', multiplier);
+    }, [multiplier]);
+
+    // finds coords min/ max and sets scaling multiplier
     useEffect(() => {
         // get max/min lat and lng
         if (coords && dimensions) {
@@ -81,13 +90,21 @@ const Explorer = ({ polygons }) => {
             const width = tempMinMax.lng.max - tempMinMax.lng.min;
             const height = tempMinMax.lat.max - tempMinMax.lat.min;
 
-            console.log(width, height);
+            console.log('gps width', width,'gps height', height);
+            console.log (width > height ? `bigger width` : `bigger height`);
 
             //calculate multiplier to convert to new res
-            // hard coded to 500x500 target res right now
             // find which has bigger span width or height
-            // multiplier = bigger dimension / target res
-            setMultiplier(width > height ? dimensions.width / width : dimensions.height / (height * 1.36));
+            // multiplier = target res / bigger dimension
+
+            let xRatio = 1;
+            let yRatio = dimensions.height / dimensions.width;
+
+            setMultiplier(
+                 width / dimensions.width  > height / dimensions.height * 1.36
+                    ? dimensions.width / width
+                    : dimensions.height / (height * 1.36)
+            );
         }
     }, [coords, dimensions]);
 
