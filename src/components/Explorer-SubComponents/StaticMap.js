@@ -9,7 +9,7 @@ import { generateSVGPath } from "../../utils/polygonSVGgenerator";
 
 const GOOGLEMAPSKEY = process.env.REACT_APP_GOOGLE_MAPS_KEY;
 
-export const StaticMap = ({ coords, minMax, multiplier, dimensions }) => {
+export const StaticMap = ({ coords, minMax, multiplier, dimensions, offset }) => {
     const [center, setCenter] = useState(null);
 
     const mapRef = useRef();
@@ -36,15 +36,16 @@ export const StaticMap = ({ coords, minMax, multiplier, dimensions }) => {
 
     // generate clip path based on coords and map container dimensions
     useEffect(() => {
-        if (staticMapRef.current && coords && minMax && multiplier) {
+        if (staticMapRef.current && coords && minMax && multiplier && offset) {
             staticMapRef.current.style.clipPath = `path('${generateSVGPath(
                 coords,
                 minMax,
                 multiplier,
-                dimensions
+                dimensions,
+                offset
             )}')`;
         }
-    }, [coords, minMax, multiplier, dimensions]);
+    }, [coords, minMax, multiplier, dimensions, offset]);
 
     // if (loadError) return "error loading maps";
     // if (!isLoaded) return "LOADING";

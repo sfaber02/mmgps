@@ -10,6 +10,7 @@ import "../styles/Explorer/explorer.scss";
 const Explorer = ({ polygons }) => {
     const [coords, setCoords] = useState([]);
     const [multiplier, setMultiplier] = useState(0);
+    const [offset, setOffset] = useState(null);
     const [minMax, setMinMax] = useState({
         lat: { min: Infinity, max: -Infinity },
         lng: { min: Infinity, max: -Infinity },
@@ -58,11 +59,11 @@ const Explorer = ({ polygons }) => {
     };
 
     useEffect(() => {
-        console.log('dimensions', dimensions);
+        console.log("dimensions", dimensions);
     }, [dimensions]);
 
     useEffect(() => {
-        console.log('multiplier', multiplier);
+        console.log("multiplier", multiplier);
     }, [multiplier]);
 
     // finds coords min/ max and sets scaling multiplier
@@ -90,23 +91,34 @@ const Explorer = ({ polygons }) => {
             const width = tempMinMax.lng.max - tempMinMax.lng.min;
             const height = tempMinMax.lat.max - tempMinMax.lat.min;
 
-            console.log('gps width', width,'gps height', height);
-            console.log (width > height ? `bigger width` : `bigger height`);
+            console.log("gps width", width, "gps height", height);
+            console.log(width > height ? `bigger width` : `bigger height`);
 
             //calculate multiplier to convert to new res
             // find which has bigger span width or height
             // multiplier = target res / bigger dimension
-
-            let xRatio = 1;
-            let yRatio = dimensions.height / dimensions.width;
-
             setMultiplier(
-                 width / dimensions.width  > height / dimensions.height * 1.36
+                width / dimensions.width > (height / dimensions.height) * 1.36
                     ? dimensions.width / width
                     : dimensions.height / (height * 1.36)
             );
         }
     }, [coords, dimensions]);
+
+    // set offset for smaller polygon dimension
+    // used to center polygon on canvas
+    useEffect(() => {
+        if (coords && dimensions && multiplier) {
+            const width = minMax.lng.max - minMax.lng.min;
+            const height = minMax.lat.max - minMax.lat.min;
+    
+            setOffset(
+                width / dimensions.width > (height / dimensions.height) * 1.36
+                    ? { height: (dimensions.height - height * multiplier) / 2, width: 0 }
+                    : { width: (dimensions.width - width * multiplier) / 2, height: 0 }
+            );
+        }
+    }, [coords, dimensions, multiplier]);
 
     return (
         <div className="explorer-container">
@@ -123,6 +135,7 @@ const Explorer = ({ polygons }) => {
                 minMax={minMax}
                 multiplier={multiplier}
                 dimensions={dimensions}
+                offset={offset}
                 // polygonPath={polygonPath}
             />
             {coords ? (
