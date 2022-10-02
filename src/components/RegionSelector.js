@@ -19,7 +19,6 @@ import { useNavigate } from "react-router-dom";
 import { Locate } from "./RegionSelector-SubComponents/Locate";
 import { Search } from "./RegionSelector-SubComponents/Search";
 import { Explorer } from "./Explorer";
-import { Canvas } from "./Explorer-SubComponents/Canvas";
 
 const GOOGLEMAPSKEY = process.env.REACT_APP_GOOGLE_MAPS_KEY;
 

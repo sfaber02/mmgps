@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 
-import { Canvas } from "./Explorer-SubComponents/Canvas";
-import { Mask } from "./Explorer-SubComponents/Mask";
 import { StaticMap } from "./Explorer-SubComponents/StaticMap";
 import { mapContainerStyle } from "../mapConfig/explorer-config";
 
@@ -15,7 +13,6 @@ const Explorer = ({ polygons }) => {
         lat: { min: Infinity, max: -Infinity },
         lng: { min: Infinity, max: -Infinity },
     });
-    // const [polygonPath, setPolygonPath] = useState("");
     const [dimensions, setDimensions] = useState();
 
     // turn polygon path from google maps API into lat, lng coords
@@ -47,7 +44,6 @@ const Explorer = ({ polygons }) => {
     }, []);
 
     window.onresize = () => {
-        console.log("WINDOW RESIZE", window.innerWidth, window.innerHeight);
         // set new dimensions if window is resized
         let width =
             window.innerWidth *
@@ -58,18 +54,6 @@ const Explorer = ({ polygons }) => {
         setDimensions({ width, height });
     };
 
-    // useEffect(() => {
-    //     console.log("dimensions", dimensions);
-    // }, [dimensions]);
-
-    // useEffect(() => {
-    //     console.log("multiplier", multiplier);
-    // }, [multiplier]);
-
-    // useEffect(() => {
-    //     console.log('offset', offset);
-    // }, [offset]);
-
     // finds coords min/ max and sets scaling multiplier
     useEffect(() => {
         // get max/min lat and lng
@@ -79,7 +63,6 @@ const Explorer = ({ polygons }) => {
                 lng: { min: Infinity, max: -Infinity },
             };
             for (let coord of coords) {
-                // console.log(coord);
                 if (coord.lat > tempMinMax.lat.max)
                     tempMinMax.lat.max = coord.lat;
                 if (coord.lat < tempMinMax.lat.min)
@@ -94,9 +77,6 @@ const Explorer = ({ polygons }) => {
             // determine total dimensions of shape by subtracting min from max
             const width = tempMinMax.lng.max - tempMinMax.lng.min;
             const height = tempMinMax.lat.max - tempMinMax.lat.min;
-
-            console.log("gps width", width, "gps height", height);
-            console.log(width / dimensions.width > (height / dimensions.height) * 1.36 ? `bigger width` : `bigger height`);
 
             //calculate multiplier to convert to new res
             // find which has bigger span width or height
@@ -126,21 +106,12 @@ const Explorer = ({ polygons }) => {
 
     return (
         <div className="explorer-container">
-            {/* <Mask
-                coords={coords}
-                minMax={minMax}
-                multiplier={multiplier}
-                polygonPath={polygonPath}
-                setPolygonPath={setPolygonPath}
-            /> */}
-            {/* <Canvas coords={coords} minMax={minMax} multiplier={multiplier} /> */}
             <StaticMap
                 coords={coords}
                 minMax={minMax}
                 multiplier={multiplier}
                 dimensions={dimensions}
                 offset={offset}
-                // polygonPath={polygonPath}
             />
             {coords ? (
                 coords.map((e) => <p>{`lat: ${e.lat}  lng: ${e.lng}\n`}</p>)
