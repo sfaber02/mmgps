@@ -32,7 +32,7 @@ const Explorer = ({ polygons }) => {
         }
     }, [polygons]);
 
-    useEffect(() => {
+    const resetDimensions = () => {
         // find width and height in pixels based on window size and mapContainer CSS size
         let width =
             window.innerWidth *
@@ -41,18 +41,11 @@ const Explorer = ({ polygons }) => {
             window.innerHeight *
             (Number(mapContainerStyle.height.split("v")[0]) / 100);
         setDimensions({ width, height });
-    }, []);
-
-    window.onresize = () => {
-        // set new dimensions if window is resized
-        let width =
-            window.innerWidth *
-            (Number(mapContainerStyle.width.split("v")[0]) / 100);
-        let height =
-            window.innerHeight *
-            (Number(mapContainerStyle.height.split("v")[0]) / 100);
-        setDimensions({ width, height });
     };
+    
+    // set dimensions on load and window resize
+    useEffect(() => resetDimensions(), []);
+    window.onresize = () => resetDimensions();
 
     // finds coords min/ max and sets scaling multiplier
     useEffect(() => {
@@ -123,3 +116,4 @@ const Explorer = ({ polygons }) => {
 };
 
 export { Explorer };
+
