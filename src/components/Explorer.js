@@ -58,13 +58,17 @@ const Explorer = ({ polygons }) => {
         setDimensions({ width, height });
     };
 
-    useEffect(() => {
-        console.log("dimensions", dimensions);
-    }, [dimensions]);
+    // useEffect(() => {
+    //     console.log("dimensions", dimensions);
+    // }, [dimensions]);
 
-    useEffect(() => {
-        console.log("multiplier", multiplier);
-    }, [multiplier]);
+    // useEffect(() => {
+    //     console.log("multiplier", multiplier);
+    // }, [multiplier]);
+
+    // useEffect(() => {
+    //     console.log('offset', offset);
+    // }, [offset]);
 
     // finds coords min/ max and sets scaling multiplier
     useEffect(() => {
@@ -92,7 +96,7 @@ const Explorer = ({ polygons }) => {
             const height = tempMinMax.lat.max - tempMinMax.lat.min;
 
             console.log("gps width", width, "gps height", height);
-            console.log(width > height ? `bigger width` : `bigger height`);
+            console.log(width / dimensions.width > (height / dimensions.height) * 1.36 ? `bigger width` : `bigger height`);
 
             //calculate multiplier to convert to new res
             // find which has bigger span width or height
@@ -114,7 +118,7 @@ const Explorer = ({ polygons }) => {
     
             setOffset(
                 width / dimensions.width > (height / dimensions.height) * 1.36
-                    ? { height: (dimensions.height - height * multiplier) / 2, width: 0 }
+                    ? { height: (dimensions.height - height * 1.36 * multiplier) / 2, width: 0 }
                     : { width: (dimensions.width - width * multiplier) / 2, height: 0 }
             );
         }
