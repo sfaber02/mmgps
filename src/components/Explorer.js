@@ -6,14 +6,21 @@ import { mapContainerStyle } from "../mapConfig/explorer-config";
 import "../styles/Explorer/explorer.scss";
 
 const Explorer = ({ polygons }) => {
+    // decimal degree coordinates from google maps polygon
     const [coords, setCoords] = useState([]);
+    // multiplier to convert gps coord into pixel coord
     const [multiplier, setMultiplier] = useState(0);
+    // pixel offset for smaller polygon dimension (to center polygon on canvas)
     const [offset, setOffset] = useState(null);
+    // min / max decimal degree coords
     const [minMax, setMinMax] = useState({
         lat: { min: Infinity, max: -Infinity },
         lng: { min: Infinity, max: -Infinity },
     });
+    // dimensions of map canvas in pixels
     const [dimensions, setDimensions] = useState();
+    // distance polygon spans in meters
+    const [distance, setDistance] = useState();
 
     // turn polygon path from google maps API into lat, lng coords
     useEffect(() => {
@@ -42,7 +49,7 @@ const Explorer = ({ polygons }) => {
             (Number(mapContainerStyle.height.split("v")[0]) / 100);
         setDimensions({ width, height });
     };
-    
+
     // set dimensions on load and window resize
     useEffect(() => resetDimensions(), []);
     window.onresize = () => resetDimensions();
@@ -82,17 +89,48 @@ const Explorer = ({ polygons }) => {
         }
     }, [coords, dimensions]);
 
+    // sets distance in meters of polygon
+    useEffect(() => {
+        if (minMax.lng.max !== -Infinity) {
+            const width = minMax.lng.max - minMax.lng.min;
+            const height = minMax.lat.max - minMax.lat.min;
+            console.log(width, height);
+
+            const latDistance = height * (10000 / 90) * 1000;
+            const lngDistance =
+                Math.abs(
+                    width *
+                        (Math.cos((minMax.lat.max + minMax.lat.min) / 2) * 111)
+                ) * 1000;
+            console.log(
+                "height distance in m",
+                latDistance,
+                "width distance in m",
+                lngDistance
+            );
+            setDistance({ lat: latDistance, lng: lngDistance });
+        }
+    }, [coords, minMax]);
+
     // set offset for smaller polygon dimension
     // used to center polygon on canvas
     useEffect(() => {
         if (coords && dimensions && multiplier) {
             const width = minMax.lng.max - minMax.lng.min;
             const height = minMax.lat.max - minMax.lat.min;
-    
+
             setOffset(
                 width / dimensions.width > (height / dimensions.height) * 1.36
-                    ? { height: (dimensions.height - height * 1.36 * multiplier) / 2, width: 0 }
-                    : { width: (dimensions.width - width * multiplier) / 2, height: 0 }
+                    ? {
+                          height:
+                              (dimensions.height - height * 1.36 * multiplier) /
+                              2,
+                          width: 0,
+                      }
+                    : {
+                          width: (dimensions.width - width * multiplier) / 2,
+                          height: 0,
+                      }
             );
         }
     }, [coords, dimensions, multiplier]);
@@ -116,4 +154,3 @@ const Explorer = ({ polygons }) => {
 };
 
 export { Explorer };
-

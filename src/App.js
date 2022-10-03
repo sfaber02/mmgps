@@ -40,7 +40,6 @@ const App = () => {
             axios
                 .get(`${API}/users/refresh_token`, { withCredentials: true })
                 .then((res) => {
-                    console.log(res);
                     handleLogin(res.data.accessToken);
                 })
                 .catch((err) => console.log(err));
