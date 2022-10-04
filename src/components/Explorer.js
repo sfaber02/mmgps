@@ -157,24 +157,32 @@ const Explorer = ({ polygons }) => {
     // set offset for smaller polygon dimension
     // used to center polygon on canvas
     useEffect(() => {
-        if (coords && dimensions && multiplier) {
+        if (coords && dimensions && multiplier && scale && metersPerPx) {
             const width = minMax.lng.max - minMax.lng.min;
             const height = minMax.lat.max - minMax.lat.min;
-            setOffset(
-                width / dimensions.width > (height / dimensions.height) * 1.36
-                    ? {
-                          height:
-                              (dimensions.height - height * 1.36 * multiplier) /
-                              2,
-                          width: 0,
-                      }
-                    : {
-                          width: (dimensions.width - width * multiplier) / 2,
-                          height: 0,
-                      }
-            );
+            // setOffset(
+            //     width / dimensions.width > (height / dimensions.height) * 1.36
+            //         ? {
+            //               height:
+            //                  (dimensions.height - ((height * 1.36 * multiplier) * scale)) /
+            //                   2,
+            //               width: 0 //(dimensions.width - (dimensions.width * scale)) / 2,
+            //           }
+            //         : {
+            //               width: (dimensions.width - width * multiplier) / 2,
+            //               height: 0 //-(dimensions.height - (dimensions.height * scale)) / 2,
+            //           }
+            // );
+
+            setOffset({
+                height:
+                    -(dimensions.height - height * 1.36 * multiplier * scale) /
+                    1.36,
+                width: (dimensions.width - width * multiplier * scale) / 1.36,
+            });
+
         }
-    }, [coords, dimensions, multiplier, zoomLevel, maxMeters]);
+    }, [coords, dimensions, multiplier, zoomLevel, maxMeters, scale, metersPerPx]);
 
     return (
         <div className="explorer-container">
