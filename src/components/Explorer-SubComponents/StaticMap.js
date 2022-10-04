@@ -9,7 +9,7 @@ import { generateSVGPath } from "../../utils/polygonSVGgenerator";
 
 const GOOGLEMAPSKEY = process.env.REACT_APP_GOOGLE_MAPS_KEY;
 
-export const StaticMap = ({ coords, minMax, multiplier, dimensions, offset }) => {
+export const StaticMap = ({ coords, minMax, multiplier, dimensions, offset, zoomLevel }) => {
     const [center, setCenter] = useState(null);
 
     const mapRef = useRef();
@@ -54,7 +54,7 @@ export const StaticMap = ({ coords, minMax, multiplier, dimensions, offset }) =>
         <div className="static-map-container" ref={staticMapRef}>
             <GoogleMap
                 mapContainerStyle={mapContainerStyle}
-                zoom={18} // default zoom level
+                zoom={zoomLevel} // default zoom level
                 center={center ? center : { lat: 27.316424, lng: 12.955319 }}
                 options={options}
                 // onLoad={onMapLoad}

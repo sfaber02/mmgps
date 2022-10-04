@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 import { StaticMap } from "./Explorer-SubComponents/StaticMap";
 import { mapContainerStyle } from "../mapConfig/explorer-config";
+import { generateMetersPerPx } from "../utils/metersPerPx";
 
 import "../styles/Explorer/explorer.scss";
 
@@ -21,6 +22,10 @@ const Explorer = ({ polygons }) => {
     const [dimensions, setDimensions] = useState();
     // distance polygon spans in meters
     const [distance, setDistance] = useState();
+    // meters per px at each zoom level based on average latitude
+    const [metersPerPx, setMetersPerPx] = useState();
+    // min zoomLevel to see entire shape
+    const [zoomLevel, setZoomLevel] = useState(1);
 
     // turn polygon path from google maps API into lat, lng coords
     useEffect(() => {
@@ -89,7 +94,7 @@ const Explorer = ({ polygons }) => {
         }
     }, [coords, dimensions]);
 
-    // sets distance in meters of polygon
+    // sets distance in meters of polygon also sets metersPerPx based on average LAT
     useEffect(() => {
         if (minMax.lng.max !== -Infinity) {
             const width = minMax.lng.max - minMax.lng.min;
@@ -109,8 +114,30 @@ const Explorer = ({ polygons }) => {
                 lngDistance
             );
             setDistance({ lat: latDistance, lng: lngDistance });
+            
+            setMetersPerPx(
+                generateMetersPerPx((minMax.lat.max + minMax.lat.min) / 2)
+            );
         }
     }, [coords, minMax]);
+
+    //determines zoom level based on metersPerPX, distance, and dimensions
+    useEffect(() => {
+        if (metersPerPx && distance && dimensions) {
+           // go through zoom levels backwards to find the first level that will
+           // contain the polygon
+            for (let zLevel = 22; zLevel >= 1; zLevel--) {
+                const widthInMeters = metersPerPx[zLevel].lat * dimensions.width; 
+                const heightInMeters = metersPerPx[zLevel].lat * dimensions.height;
+                console.log('zLevel = ', zLevel, widthInMeters, heightInMeters);
+                if (widthInMeters >= distance.lng && heightInMeters >= distance.lat) {
+                    console.log('zoom level found', zLevel);
+                    setZoomLevel(zLevel);
+                    break;
+                }
+           } 
+        }
+    }, [metersPerPx, distance, dimensions]);
 
     // set offset for smaller polygon dimension
     // used to center polygon on canvas
@@ -143,6 +170,7 @@ const Explorer = ({ polygons }) => {
                 multiplier={multiplier}
                 dimensions={dimensions}
                 offset={offset}
+                zoomLevel={zoomLevel}
             />
             {coords ? (
                 coords.map((e) => <p>{`lat: ${e.lat}  lng: ${e.lng}\n`}</p>)
