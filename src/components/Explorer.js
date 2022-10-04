@@ -18,14 +18,18 @@ const Explorer = ({ polygons }) => {
         lat: { min: Infinity, max: -Infinity },
         lng: { min: Infinity, max: -Infinity },
     });
-    // dimensions of map canvas in pixels
+    // dimensions of map canvas in pixels {width: w in px, height: h in px}
     const [dimensions, setDimensions] = useState();
-    // distance polygon spans in meters
+    // distance polygon spans in meters {lng: width in m, lat: height in m}
     const [distance, setDistance] = useState();
     // meters per px at each zoom level based on average latitude
     const [metersPerPx, setMetersPerPx] = useState();
     // min zoomLevel to see entire shape
     const [zoomLevel, setZoomLevel] = useState(1);
+    // stores max meters w x h at current canvas size {width: max width in M, height: max H in M}
+    const [maxMeters, setMaxMeters] = useState();
+    // scale for polygon based on zoomLevel and distance
+    const [scale, setScale] = useState(1);
 
     // turn polygon path from google maps API into lat, lng coords
     useEffect(() => {
@@ -127,17 +131,28 @@ const Explorer = ({ polygons }) => {
            // go through zoom levels backwards to find the first level that will
            // contain the polygon
             for (let zLevel = 22; zLevel >= 1; zLevel--) {
-                const widthInMeters = metersPerPx[zLevel].lat * dimensions.width; 
-                const heightInMeters = metersPerPx[zLevel].lat * dimensions.height;
-                console.log('zLevel = ', zLevel, widthInMeters, heightInMeters);
+                const widthInMeters = metersPerPx[zLevel].lng * dimensions.width; 
+                const heightInMeters = metersPerPx[zLevel].lng * dimensions.height;
                 if (widthInMeters >= distance.lng && heightInMeters >= distance.lat) {
-                    console.log('zoom level found', zLevel);
+                    console.log ('canvas width in M=', widthInMeters, 'canvas height in m', heightInMeters);
                     setZoomLevel(zLevel);
+                    setMaxMeters({width: widthInMeters, height: heightInMeters});
                     break;
                 }
            } 
         }
     }, [metersPerPx, distance, dimensions]);
+
+    // sets scale for polygon clip path
+    // based on  distance state and maxMeters state
+    useEffect(() => {
+        if (maxMeters && distance) {
+            let widthScale = distance.lng / maxMeters.width;
+            let heightScale = distance.lat / maxMeters.height;
+            console.log ('widthScale=', widthScale, 'heightScale=', heightScale);
+            setScale(widthScale >= heightScale ? widthScale : heightScale);
+        }
+    }, [maxMeters, distance]);
 
     // set offset for smaller polygon dimension
     // used to center polygon on canvas
@@ -145,7 +160,6 @@ const Explorer = ({ polygons }) => {
         if (coords && dimensions && multiplier) {
             const width = minMax.lng.max - minMax.lng.min;
             const height = minMax.lat.max - minMax.lat.min;
-
             setOffset(
                 width / dimensions.width > (height / dimensions.height) * 1.36
                     ? {
@@ -160,7 +174,7 @@ const Explorer = ({ polygons }) => {
                       }
             );
         }
-    }, [coords, dimensions, multiplier]);
+    }, [coords, dimensions, multiplier, zoomLevel, maxMeters]);
 
     return (
         <div className="explorer-container">
@@ -171,6 +185,7 @@ const Explorer = ({ polygons }) => {
                 dimensions={dimensions}
                 offset={offset}
                 zoomLevel={zoomLevel}
+                scale={scale}
             />
             {coords ? (
                 coords.map((e) => <p>{`lat: ${e.lat}  lng: ${e.lng}\n`}</p>)

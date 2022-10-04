@@ -9,7 +9,15 @@ import { generateSVGPath } from "../../utils/polygonSVGgenerator";
 
 const GOOGLEMAPSKEY = process.env.REACT_APP_GOOGLE_MAPS_KEY;
 
-export const StaticMap = ({ coords, minMax, multiplier, dimensions, offset, zoomLevel }) => {
+export const StaticMap = ({
+    coords,
+    minMax,
+    multiplier,
+    dimensions,
+    offset,
+    zoomLevel,
+    scale,
+}) => {
     const [center, setCenter] = useState(null);
 
     const mapRef = useRef();
@@ -42,7 +50,8 @@ export const StaticMap = ({ coords, minMax, multiplier, dimensions, offset, zoom
                 minMax,
                 multiplier,
                 dimensions,
-                offset
+                offset,
+                scale
             )}')`;
         }
     }, [coords, minMax, multiplier, dimensions, offset]);
