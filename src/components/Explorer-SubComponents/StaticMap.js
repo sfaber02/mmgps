@@ -13,7 +13,7 @@ export const StaticMap = ({
     coords,
     minMax,
     multiplier,
-    dimensions,
+    canvasDimensions,
     offset,
     zoomLevel,
     scale,
@@ -42,19 +42,19 @@ export const StaticMap = ({
         }
     }, [minMax]);
 
-    // generate clip path based on coords and map container dimensions
+    // generate clip path based on coords and map container canvasDimensions
     useEffect(() => {
         if (staticMapRef.current && coords && minMax && multiplier && offset) {
             staticMapRef.current.style.clipPath = `path('${generateSVGPath(
                 coords,
                 minMax,
                 multiplier,
-                dimensions,
+                canvasDimensions,
                 offset,
                 scale
             )}')`;
         }
-    }, [coords, minMax, multiplier, dimensions, offset]);
+    }, [coords, minMax, multiplier, canvasDimensions, offset]);
 
     // if (loadError) return "error loading maps";
     // if (!isLoaded) return "LOADING";
