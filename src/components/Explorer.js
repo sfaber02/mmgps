@@ -9,6 +9,8 @@ import "../styles/Explorer/explorer.scss";
 const Explorer = ({ polygons }) => {
     // decimal degree coordinates from google maps polygon
     const [coords, setCoords] = useState([]);
+    // stores width and height of polygon in dec degrees
+    const [widthHeight, setWidthHeight] = useState();
     // multiplier to convert gps coord into pixel coord
     const [multiplier, setMultiplier] = useState(0);
     // pixel offset for smaller polygon dimension (to center polygon on canvas)
@@ -30,6 +32,9 @@ const Explorer = ({ polygons }) => {
     const [maxMeters, setMaxMeters] = useState();
     // scale for polygon based on zoomLevel and distance
     const [scale, setScale] = useState(1);
+
+    // turns debug console.logs on / off
+    const debugMode = false;
 
     // turn polygon path from google maps API into lat, lng coords
     useEffect(() => {
@@ -81,65 +86,73 @@ const Explorer = ({ polygons }) => {
                 if (coord.lng < tempMinMax.lng.min)
                     tempMinMax.lng.min = coord.lng;
             }
-            setMinMax(tempMinMax);
-
-            // determine total dimensions of shape by subtracting min from max
-            const width = tempMinMax.lng.max - tempMinMax.lng.min;
-            const height = tempMinMax.lat.max - tempMinMax.lat.min;
-
-            //calculate multiplier to convert to new res
-            // find which has bigger span width or height
-            // multiplier = target res / bigger dimension
-            setMultiplier(
-                width / dimensions.width > (height / dimensions.height) * 1.36
-                    ? dimensions.width / width
-                    : dimensions.height / (height * 1.36)
-            );
+            setMinMax(tempMinMax); 
         }
     }, [coords, dimensions]);
 
-    // sets distance in meters of polygon also sets metersPerPx based on average LAT
+    // sets widthHeight State based off minMax
     useEffect(() => {
-        if (minMax.lng.max !== -Infinity) {
+        if (minMax) {
+            // determine total dimensions of shape by subtracting min from max
             const width = minMax.lng.max - minMax.lng.min;
             const height = minMax.lat.max - minMax.lat.min;
-            console.log(width, height);
+            setWidthHeight({width, height});
+        }
+    }, [minMax]);
 
-            const latDistance = height * (10000 / 90) * 1000;
+    // sets multiplier state based on width / height and canvas dimensions
+    useEffect(() => {
+        //calculate multiplier to convert to new res
+        // find which has bigger span width or height
+        // multiplier = target res / bigger dimension
+        if (widthHeight && dimensions) {
+            setMultiplier(
+                widthHeight.width / dimensions.width > (widthHeight.height / dimensions.height) * 1.36
+                    ? dimensions.width / widthHeight.width
+                    : dimensions.height / (widthHeight.height * 1.36)
+            );
+        }
+    }, [widthHeight, dimensions]);
+
+    // sets distance in meters of polygon also sets metersPerPx based on average LAT
+    useEffect(() => {
+        if (minMax.lng.max !== -Infinity && widthHeight) {
+            const latDistance = widthHeight.height * (10000 / 90) * 1000;
             const lngDistance =
                 Math.abs(
-                    width *
+                    widthHeight.width *
                         (Math.cos((minMax.lat.max + minMax.lat.min) / 2) * 111)
                 ) * 1000;
-            console.log(
-                "height distance in m",
-                latDistance,
-                "width distance in m",
-                lngDistance
-            );
             setDistance({ lat: latDistance, lng: lngDistance });
-            
+
             setMetersPerPx(
                 generateMetersPerPx((minMax.lat.max + minMax.lat.min) / 2)
             );
         }
-    }, [coords, minMax]);
+    }, [coords, minMax, widthHeight]);
 
     //determines zoom level based on metersPerPX, distance, and dimensions
     useEffect(() => {
         if (metersPerPx && distance && dimensions) {
-           // go through zoom levels backwards to find the first level that will
-           // contain the polygon
+            // go through zoom levels backwards to find the first level that will
+            // contain the polygon
             for (let zLevel = 22; zLevel >= 1; zLevel--) {
-                const widthInMeters = metersPerPx[zLevel].lng * dimensions.width; 
-                const heightInMeters = metersPerPx[zLevel].lng * dimensions.height;
-                if (widthInMeters >= distance.lng && heightInMeters >= distance.lat) {
-                    console.log ('canvas width in M=', widthInMeters, 'canvas height in m', heightInMeters);
+                const widthInMeters =
+                    metersPerPx[zLevel].lng * dimensions.width;
+                const heightInMeters =
+                    metersPerPx[zLevel].lng * dimensions.height;
+                if (
+                    widthInMeters >= distance.lng &&
+                    heightInMeters >= distance.lat
+                ) {
                     setZoomLevel(zLevel);
-                    setMaxMeters({width: widthInMeters, height: heightInMeters});
+                    setMaxMeters({
+                        width: widthInMeters,
+                        height: heightInMeters,
+                    });
                     break;
                 }
-           } 
+            }
         }
     }, [metersPerPx, distance, dimensions]);
 
@@ -149,7 +162,6 @@ const Explorer = ({ polygons }) => {
         if (maxMeters && distance) {
             let widthScale = distance.lng / maxMeters.width;
             let heightScale = distance.lat / maxMeters.height;
-            console.log ('widthScale=', widthScale, 'heightScale=', heightScale);
             setScale(widthScale >= heightScale ? widthScale : heightScale);
         }
     }, [maxMeters, distance]);
@@ -157,32 +169,75 @@ const Explorer = ({ polygons }) => {
     // set offset for smaller polygon dimension
     // used to center polygon on canvas
     useEffect(() => {
-        if (coords && dimensions && multiplier && scale && metersPerPx) {
+        if (coords && dimensions && multiplier && scale && metersPerPx && widthHeight) {
             const width = minMax.lng.max - minMax.lng.min;
             const height = minMax.lat.max - minMax.lat.min;
-            // setOffset(
-            //     width / dimensions.width > (height / dimensions.height) * 1.36
-            //         ? {
-            //               height:
-            //                  (dimensions.height - ((height * 1.36 * multiplier) * scale)) /
-            //                   2,
-            //               width: 0 //(dimensions.width - (dimensions.width * scale)) / 2,
-            //           }
-            //         : {
-            //               width: (dimensions.width - width * multiplier) / 2,
-            //               height: 0 //-(dimensions.height - (dimensions.height * scale)) / 2,
-            //           }
-            // );
 
             setOffset({
                 height:
-                    -(dimensions.height - height * 1.36 * multiplier * scale) /
-                    1.36,
-                width: (dimensions.width - width * multiplier * scale) / 1.36,
+                    -(dimensions.height - widthHeight.height * 1.36 * multiplier * scale) /
+                    1.532,
+                width: (dimensions.width - widthHeight.width * multiplier * scale) / 2,
             });
-
         }
-    }, [coords, dimensions, multiplier, zoomLevel, maxMeters, scale, metersPerPx]);
+    }, [
+        coords,
+        dimensions,
+        multiplier,
+        zoomLevel,
+        maxMeters,
+        scale,
+        metersPerPx,
+        widthHeight
+    ]);
+
+    // debug - logs various states
+    useEffect(() => {
+        if (
+            (coords,
+            dimensions,
+            multiplier,
+            zoomLevel,
+            maxMeters,
+            scale,
+            metersPerPx,
+            offset,
+            minMax,
+            distance,
+            widthHeight,
+            debugMode)
+        ) {
+
+            console.clear();
+            console.log("multiplier", multiplier);
+            console.log("offset in px", offset);
+            console.log("polygon dim in dec deg", widthHeight.width, widthHeight.height);
+            console.log("minMax in dec deg", minMax);
+            console.log(
+                "canvas dim in px",
+                dimensions.width,
+                dimensions.height
+            );
+            console.log("maxmeters of canvas size in M", maxMeters);
+            console.log("scale", scale);
+            console.log(
+                "polygon dim in px",
+                widthHeight.width * multiplier * scale,
+                widthHeight.height * multiplier * scale * 1.36
+            );
+        }
+    }, [
+        coords,
+        dimensions,
+        multiplier,
+        zoomLevel,
+        maxMeters,
+        scale,
+        metersPerPx,
+        offset,
+        minMax,
+        distance,
+    ]);
 
     return (
         <div className="explorer-container">
