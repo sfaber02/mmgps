@@ -34,7 +34,7 @@ const Explorer = ({ polygons }) => {
     const [scale, setScale] = useState(1);
 
     // turns debug console.logs on / off
-    const debugMode = false;
+    const debugMode = true;
 
     // turn polygon path from google maps API into lat, lng coords
     useEffect(() => {
@@ -71,7 +71,7 @@ const Explorer = ({ polygons }) => {
     // finds coords min/ max and sets scaling multiplier
     useEffect(() => {
         // get max/min lat and lng
-        if (coords && canvasDimensions) {
+        if (coords) {
             const tempMinMax = {
                 lat: { min: Infinity, max: -Infinity },
                 lng: { min: Infinity, max: -Infinity },
@@ -86,17 +86,17 @@ const Explorer = ({ polygons }) => {
                 if (coord.lng < tempMinMax.lng.min)
                     tempMinMax.lng.min = coord.lng;
             }
-            setMinMax(tempMinMax); 
+            setMinMax(tempMinMax);
         }
-    }, [coords, canvasDimensions]);
+    }, [coords]);
 
     // sets widthHeight State based off minMax
     useEffect(() => {
         if (minMax) {
-            // determine total canvasDimensions of shape by subtracting min from max
+            // determine total width/ height of shape by subtracting min from max in dec deg
             const width = minMax.lng.max - minMax.lng.min;
             const height = minMax.lat.max - minMax.lat.min;
-            setWidthHeight({width, height});
+            setWidthHeight({ width, height });
         }
     }, [minMax]);
 
@@ -107,9 +107,10 @@ const Explorer = ({ polygons }) => {
         // multiplier = target res / bigger dimension
         if (widthHeight && canvasDimensions) {
             setMultiplier(
-                widthHeight.width / canvasDimensions.width > (widthHeight.height / canvasDimensions.height) * 1.36
+                widthHeight.width / canvasDimensions.width >
+                    (widthHeight.height / canvasDimensions.height) * 1.37
                     ? canvasDimensions.width / widthHeight.width
-                    : canvasDimensions.height / (widthHeight.height * 1.36)
+                    : canvasDimensions.height / (widthHeight.height * 1.37)
             );
         }
     }, [widthHeight, canvasDimensions]);
@@ -169,16 +170,29 @@ const Explorer = ({ polygons }) => {
     // set offset for smaller polygon dimension
     // used to center polygon on canvas
     useEffect(() => {
-        if (coords && canvasDimensions && multiplier && scale && metersPerPx && widthHeight) {
+        if (
+            coords &&
+            canvasDimensions &&
+            multiplier &&
+            scale &&
+            metersPerPx &&
+            widthHeight
+        ) {
             const width = minMax.lng.max - minMax.lng.min;
             const height = minMax.lat.max - minMax.lat.min;
 
             setOffset({
                 height:
-                    -(canvasDimensions.height - widthHeight.height * 1.36 * multiplier * scale) /
-                    1.532,
-                width: (canvasDimensions.width - widthHeight.width * multiplier * scale) / 2,
+                    -(
+                        canvasDimensions.height -
+                        widthHeight.height * multiplier * scale
+                    ) / 2,
+                width:
+                    (canvasDimensions.width -
+                        widthHeight.width * scale) / 2,
             });
+
+           
         }
     }, [
         coords,
@@ -188,7 +202,7 @@ const Explorer = ({ polygons }) => {
         maxMeters,
         scale,
         metersPerPx,
-        widthHeight
+        widthHeight,
     ]);
 
     // debug - logs various states
@@ -207,24 +221,19 @@ const Explorer = ({ polygons }) => {
             widthHeight,
             debugMode)
         ) {
-
             console.clear();
             console.log("multiplier", multiplier);
             console.log("offset in px", offset);
-            console.log("polygon dim in dec deg", widthHeight.width, widthHeight.height);
+            console.log("polygon dim in dec deg (widthHeight)", widthHeight);
             console.log("minMax in dec deg", minMax);
-            console.log(
-                "canvas dim in px",
-                canvasDimensions.width,
-                canvasDimensions.height
-            );
+            console.log("canvas dim in px", canvasDimensions);
             console.log("maxmeters of canvas size in M", maxMeters);
             console.log("scale", scale);
-            console.log(
-                "polygon dim in px",
-                widthHeight.width * multiplier * scale,
-                widthHeight.height * multiplier * scale * 1.36
-            );
+            // console.log(
+            //     "polygon dim in px",
+            //     widthHeight.width * multiplier * scale,
+            //     widthHeight.height * multiplier * scale * 1.36
+            // );
         }
     }, [
         coords,
@@ -250,11 +259,11 @@ const Explorer = ({ polygons }) => {
                 zoomLevel={zoomLevel}
                 scale={scale}
             />
-            {coords ? (
+            {/* {coords ? (
                 coords.map((e) => <p>{`lat: ${e.lat}  lng: ${e.lng}\n`}</p>)
             ) : (
                 <p>No Polygons</p>
-            )}
+            )} */}
         </div>
     );
 };
