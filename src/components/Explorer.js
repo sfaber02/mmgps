@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { StaticMap } from "./Explorer-SubComponents/StaticMap";
 import { mapContainerStyle } from "../mapConfig/explorer-config";
@@ -32,10 +32,12 @@ const Explorer = ({ polygons }) => {
     const [maxMeters, setMaxMeters] = useState();
     // scale for polygon based on zoomLevel and distance
     const [scale, setScale] = useState(1);
-
+    // ref for static map
+    const staticMap = useRef();
     // turns debug console.logs on / off
     const debugMode = true;
 
+    
     // turn polygon path from google maps API into lat, lng coords
     useEffect(() => {
         if (polygons) {
@@ -53,19 +55,23 @@ const Explorer = ({ polygons }) => {
         }
     }, [polygons]);
 
+    // stores map in REF from static map component
+    const setMap = (staticMapRef) => {
+        staticMap.current = staticMapRef.current;
+    };
+
     const resetDimensions = () => {
         // find width and height in pixels based on window size and mapContainer CSS size
-        let width =
-            window.innerWidth *
-            (Number(mapContainerStyle.width.split("v")[0]) / 100);
-        let height =
-            window.innerHeight *
-            (Number(mapContainerStyle.height.split("v")[0]) / 100);
-        setCanvasDimensions({ width, height });
+        if (staticMap.current) {
+            console.log(staticMap.current);
+            let width = staticMap.current.clientWidth;
+            let height = staticMap.current.clientHeight;
+            setCanvasDimensions({ width, height });
+        }
     };
 
     // set canvasDimensions on load and window resize
-    useEffect(() => resetDimensions(), []);
+    useEffect(() => resetDimensions(), [staticMap]);
     window.onresize = () => resetDimensions();
 
     // finds coords min/ max and sets scaling multiplier
@@ -255,6 +261,7 @@ const Explorer = ({ polygons }) => {
                 minMax={minMax}
                 multiplier={multiplier}
                 canvasDimensions={canvasDimensions}
+                setMap={setMap}
                 offset={offset}
                 zoomLevel={zoomLevel}
                 scale={scale}

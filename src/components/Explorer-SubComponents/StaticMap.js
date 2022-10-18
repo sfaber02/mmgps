@@ -14,6 +14,7 @@ export const StaticMap = ({
     minMax,
     multiplier,
     canvasDimensions,
+    setMap,
     offset,
     zoomLevel,
     scale,
@@ -29,9 +30,10 @@ export const StaticMap = ({
         libraries,
     });
 
-    // const onMapLoad = useCallback((map) => {
-    //     mapRef.current = map;
-    // }, []);
+    useEffect(() => {
+        console.log('staticmapref', staticMapRef.current);
+        setMap(staticMapRef);
+    }, [staticMapRef]);
 
     useEffect(() => {
         if (minMax) {

@@ -6,11 +6,10 @@ const libraries = ["places", "drawing"];
 
 //MAP OPTIONS
 const mapContainerStyle = {
-    width: "90vw",
+    width: "100%",
     height: "85vh",
     // margin: "auto",
     // marginTop: "20px",
-    borderRadius: "10px",
     class: "static-map-container",
 };
 
