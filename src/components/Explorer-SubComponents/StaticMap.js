@@ -31,7 +31,6 @@ export const StaticMap = ({
     });
 
     useEffect(() => {
-        console.log('staticmapref', staticMapRef.current);
         setMap(staticMapRef);
     }, [staticMapRef]);
 

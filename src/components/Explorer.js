@@ -184,18 +184,16 @@ const Explorer = ({ polygons }) => {
             metersPerPx &&
             widthHeight
         ) {
-            const width = minMax.lng.max - minMax.lng.min;
-            const height = minMax.lat.max - minMax.lat.min;
-
+            
             setOffset({
                 height:
-                    -(
+                    (
                         canvasDimensions.height -
                         widthHeight.height * multiplier * scale
                     ) / 2,
                 width:
                     (canvasDimensions.width -
-                        widthHeight.width * scale) / 2,
+                        widthHeight.width * multiplier * scale) / 2,
             });
 
            
